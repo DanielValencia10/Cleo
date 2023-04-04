@@ -1,0 +1,63 @@
+{% extends 'Cronorgama/base.html' %}
+{% block content %}
+<fieldset class="border p-2" style="width: 80%;">
+    <div class="container-fluid " style="background-color: white;">
+        <legend class="w-auto">Roles</legend>
+        <form action="">
+
+            <div class="container-fluid " style="background-color: antiquewhite;">
+                <br>
+                <label for="">Nombre</label>
+                <input type="text">
+                <br>
+                <button class="btn btn-primary">Crear</button>
+                <br>
+            </div>
+
+            <br>
+            <div class="container-fluid" style="background-color: aliceblue;">
+                <br>
+                <input type="text"> <button class="btn btn-primary">Buscar</button>
+                <br>
+                <br>
+                <CEnter>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>index</td>
+                                <td>nombre</td>
+                                <td>accion</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>1</td>
+                            <td>Secretaria Academica</td>
+                            <td><button class="btn btn-secondary">Eliminar</button> <label for=""> </label><button
+                                    class="btn btn-primary">Actualizar</button></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </CEnter>
+            </div>
+        </form>
+    </div>
+</fieldset>
+
+
+{% endblock %}

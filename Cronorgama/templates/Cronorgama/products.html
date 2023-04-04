@@ -1,0 +1,53 @@
+{% extends 'Cronorgama/base.html' %}
+{% block content %}
+<fieldset class="border p-2">
+    <legend  class="w-auto">Usuarios</legend>
+    <form action="">
+        <div class="container-fluid " style="background-color: white;">
+            <br>
+            <label for="">Nombre</label>
+            <input type="text">
+            <label for="">Cedula</label>
+            <input type="text">
+            <label for="">Correo</label>
+            <input type="text">
+            <label for="">Correo Institucional</label>
+            <input type="text">
+            <br>
+            <button class="btn btn-primary">Crear</button>
+            <br>
+        </div>
+        <br>
+        <div class="container-fluid" style="background-color: white;">
+            <br>
+            <input type="text"> <button class="btn btn-primary">Buscar</button>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>index</td>
+                        <td>nombre</td>
+                        <td>Cedula</td>
+                        <td>Correo</td>
+                        <td>Correo Institucional</td>
+                        <td>accion</td>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>1</td>
+                    <td>Daniel</td>
+                    <td>1234567890</td>
+                    <td>daniel@123.com</td>
+                    <td>daniel@correounivalle.edu.co</td>
+                    <td><button class="btn btn-secondary">Eliminar</button> <label for=""> </label><button
+                            class="btn btn-primary">Actualizar</button></td>
+                </tr>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+ </fieldset>
+{% endblock %}
