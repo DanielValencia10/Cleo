@@ -39,7 +39,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Usuarios</h1>
+                    <h1 class="h3 mb-2 text-gray-800">{{ error_message }}</h1>
                     <div class="container-fluid p-0">
 
                         <div class="card o-hidden border-0 shadow-lg my-4">
@@ -50,7 +50,7 @@
 
                                     <div class="p-3">
 
-                                        <form action="{% url 'table' %}" method="POST">
+                                        <form action="" method="POST">
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -98,30 +98,11 @@
                                             <br><br>
                                             <div class="form-group row">
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.username }}
+                                                    {{form.fecha_inicio}}
                                                 </div>
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
 
-                                                    {{ form.first_name }}
-                                                </div>
-                                                <div class="col-sm-3">
-
-                                                    {{ form.last_name }}
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-3">
-
-                                                    {{ form.password1 }}
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    {{ form.groups }}
-                                                </div>
-
-                                                <div class="col-sm-6">
-
-                                                    {{ form.email }}
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    {{ form.password2 }}
+                                                    {{form.fecha_limite}}
                                                 </div>
                                             </div>
                                         </form>
@@ -145,66 +126,38 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
-                                            <th>Habilitado</th>
+
+                                            <th>Fecha inicio</th>
+                                            <th>Fecha limite</th>
                                             <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
-                                            <th>Habilitado</th>
+
+                                            <th>Fecha inicio</th>
+                                            <th>Fecha limite</th>
                                             <th>Accion</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for User in C_users %}
+
                                         <tr>
                                             <td>{{forloop.counter}}</td>
-                                            <td>{{User.username}}</td>
-                                            <td>{% if User.groups.exists %}
-                                                {% for group in User.groups.all %}
-                                                <span class="badge badge-info">{{ group.name }}</span>
-                                                {% endfor %}
-                                                {% else %}
-                                                sin Rol
-                                                {% endif %}
-                                            </td>
-                                            <td>{{User.first_name}}</td>
-                                            <td>{{User.last_name}}</td>
-                                            <td>{{User.email}}</td>
+                                            <td>{{rango.fecha_inicio}}</td>
+
+                                            <td>{{rango.fecha_limite}}</td>
+
                                             <td>
-
-                                                {% if User.is_active %}
-
-                                                Si
-
-                                                {% else%}
-
-                                                No
-
-                                                {% endif %}
+                                                <form action="{% url 'modificarango' rango.id %}">
+                                                    {% csrf_token %}
+                                                    <button action="{% url 'modificarango' rango.id %}" type="submit"
+                                                        class="btn btn-danger">Modificar</button>
+                                                </form>
                                             </td>
-                                            <td><a class="btn btn-warning  btn-sm"
-                                                    href="{% url 'desactivar' User.id %}"><svg
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                        <path
-                                                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                                    </svg></a></td>
                                         </tr>
-                                        {% endfor %}
+
                                     </tbody>
                                 </table>
                             </div>
@@ -247,27 +200,6 @@
                 $(this).modal('show');
             });
         }
-    </script>
-    <script>
-        var passwordInput = document.getElementById('id_password1');
-        var confirmPasswordInput = document.getElementById('id_password2');
-        var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\s\d\w]).{8,}$/;
-
-        passwordInput.addEventListener('input', function () {
-            if (!regex.test(passwordInput.value)) {
-                passwordInput.setCustomValidity('La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial (excluyendo el espacio)');
-            } else {
-                passwordInput.setCustomValidity('');
-            }
-        });
-        // Validar la confirmación de contraseña ingresada en el campo password2
-        confirmPasswordInput.addEventListener('input', function () {
-            if (confirmPasswordInput.value !== passwordInput.value) {
-                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
-            } else {
-                confirmPasswordInput.setCustomValidity('');
-            }
-        });
     </script>
 </body>
 

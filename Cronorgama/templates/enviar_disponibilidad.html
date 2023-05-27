@@ -38,7 +38,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Enviar tarea</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Enviar disponibilidad</h1>
                     <div class="container-fluid p-0">
 
                         <div class="card o-hidden border-0 shadow-lg my-4">
@@ -48,7 +48,7 @@
                                 <div class="col-lg-0">
 
                                     <div class="p-3">
-                                        <form method="post">
+                                        <form method="post" action="{% url 'enviar_disponibilidad' %}">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <label for="destinatario">Destinatario:</label>
@@ -60,10 +60,11 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="proyeccion">Proyección:</label>
-                                                <select class="form-control" id="proyeccion" name="proyeccion">
-                                                    {% for proyeccion in proyecciones %}
-                                                    <option value="{{ proyeccion.id }}">{{ proyeccion }}</option>
+                                                <label for="disponibilidad">Disponibilidad:</label>
+                                                <select class="form-control" id="disponibilidad" name="disponibilidad">
+                                                    {% for disponibilidad in disponibilidades %}
+                                                    <option value="{{ disponibilidad.id }}">{{ disponibilidad }}
+                                                    </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -72,20 +73,21 @@
                                                 <textarea class="form-control" id="mensaje" name="mensaje"
                                                     rows="3"></textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-danger">Enviar tarea</button>
+                                            <button type="submit" class="btn btn-danger">Enviar Disponibilidad</button>
                                         </form>
                                         <!-- End of Page Wrapper -->
                                         <h1>Select Dependiente</h1>
-                                        <label for="select1">¿Que tarea quieres Solicitar?:</label>
-                                        <select id="select1" class="form-control">
-                                            <option value="Proyeccion">Proyeccion</option>
-                                            <option value="Disponibilidad">Disponibilidad</option>
+                                        <label for="select1">Categoría:</label>
+                                        <select id="select1">
+                                            <option value="Frutas">Frutas</option>
+                                            <option value="Verduras">Verduras</option>
                                         </select>
 
                                         <label for="select2">Opciones:</label>
-                                        <select id="select2" class="form-control">
+                                        <select id="select2">
                                             <!-- Las opciones se actualizarán dinámicamente -->
                                         </select>
+
                                     </div>
                                     <!-- Scroll to Top Button-->
                                     <a class="scroll-to-top rounded" href="#page-top">
@@ -122,34 +124,34 @@
 
                     // Definir las opciones para cada caso
                     var opciones = {
-                        "Proyeccion": {{ proyecciones_json|safe }},
-                        "Disponibilidad": {{ disponibilidades_json|safe }}
+                        Frutas: ["Manzana", "Naranja", "Banano"],
+                        Verduras: ["Tomate", "Lechuga", "Cebolla"]
                     };
 
-                // Función para actualizar las opciones del segundo select
-                function actualizarSelect2() {
-                    // Limpiar las opciones actuales
-                    select2.innerHTML = "";
+                    // Función para actualizar las opciones del segundo select
+                    function actualizarSelect2() {
+                        // Limpiar las opciones actuales
+                        select2.innerHTML = "";
 
-                    // Obtener el valor seleccionado del primer select
-                    var seleccion = select1.value;
+                        // Obtener el valor seleccionado del primer select
+                        var seleccion = select1.value;
 
-                    // Determinar las opciones correspondientes
-                    var opcionesSelect2 = opciones[seleccion];
+                        // Determinar las opciones correspondientes
+                        var opcionesSelect2 = opciones[seleccion];
 
-                    // Agregar las nuevas opciones al segundo select
-                    opcionesSelect2.forEach(function (opcion) {
-                        var option = document.createElement("option");
-                        option.text = opcion;
-                        select2.add(option);
-                    });
-                }
+                        // Agregar las nuevas opciones al segundo select
+                        opcionesSelect2.forEach(function (opcion) {
+                            var option = document.createElement("option");
+                            option.text = opcion;
+                            select2.add(option);
+                        });
+                    }
 
-                // Escuchar el evento de cambio en el primer select
-                select1.addEventListener("change", actualizarSelect2);
+                    // Escuchar el evento de cambio en el primer select
+                    select1.addEventListener("change", actualizarSelect2);
 
-                // Llamar a la función para establecer las opciones iniciales
-                actualizarSelect2();
+                    // Llamar a la función para establecer las opciones iniciales
+                    actualizarSelect2();
                 });
             </script>
         </div>

@@ -50,7 +50,7 @@
 
                                     <div class="p-3">
 
-                                        <form action="{% url 'table' %}" method="POST">
+                                        <form action="{% url 'programacion' %}" method="POST">
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -85,7 +85,7 @@
                                                             d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
                                                     </svg>Eliminar</button>
                                                 <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="abrir_modal_importar('{% url 'load_users' %}')"><svg
+                                                    onclick=""><svg
                                                         xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-box-arrow-up"
                                                         viewBox="0 0 16 16">
@@ -98,30 +98,26 @@
                                             <br><br>
                                             <div class="form-group row">
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.username }}
+                                                    {{ form.id_asignaturas }}
                                                 </div>
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
 
-                                                    {{ form.first_name }}
+                                                    {{ form.id_programas }}
                                                 </div>
                                                 <div class="col-sm-3">
 
-                                                    {{ form.last_name }}
+                                                    {{ form.id_authuser }}
+                                                </div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+                                                    {{ form.id_salon }}
                                                 </div>
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
 
-                                                    {{ form.password1 }}
+                                                    {{ form.hora }}
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    {{ form.groups }}
-                                                </div>
 
-                                                <div class="col-sm-6">
-
-                                                    {{ form.email }}
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    {{ form.password2 }}
+                                                    {{ form.dia }}
                                                 </div>
                                             </div>
                                         </form>
@@ -145,11 +141,9 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
+                                            <th>tipo de salon</th>
+                                            <th>Nombre del salon</th>
+                                            <th>Capacidad</th>
                                             <th>Habilitado</th>
                                             <th>Accion</th>
                                         </tr>
@@ -157,11 +151,9 @@
                                     <tfoot>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
+                                            <th>tipo de salon</th>
+                                            <th>Nombre del salon</th>
+                                            <th>Capacidad</th>
                                             <th>Habilitado</th>
                                             <th>Accion</th>
                                         </tr>
@@ -248,27 +240,7 @@
             });
         }
     </script>
-    <script>
-        var passwordInput = document.getElementById('id_password1');
-        var confirmPasswordInput = document.getElementById('id_password2');
-        var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\s\d\w]).{8,}$/;
-
-        passwordInput.addEventListener('input', function () {
-            if (!regex.test(passwordInput.value)) {
-                passwordInput.setCustomValidity('La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial (excluyendo el espacio)');
-            } else {
-                passwordInput.setCustomValidity('');
-            }
-        });
-        // Validar la confirmación de contraseña ingresada en el campo password2
-        confirmPasswordInput.addEventListener('input', function () {
-            if (confirmPasswordInput.value !== passwordInput.value) {
-                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
-            } else {
-                confirmPasswordInput.setCustomValidity('');
-            }
-        });
-    </script>
+    
 </body>
 
 </html>

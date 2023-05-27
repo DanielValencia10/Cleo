@@ -85,39 +85,23 @@
                                                     </svg>Eliminar</button>
                                             </div>
                                             <br><br>
-                                            <div class="container-fluid"><div class="form-group row">
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
+                                            <div class="form-group row">
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
                                                     {{ form.dia }}
                                                 </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
-                                                    <div class="form-check">{{ form.a }}<label class="form-check-label"
-                                                            for="flexCheckDefault">07:00 a.m. a 10:00 a.m.</label></div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
 
+                                                    {{ form.asigXprofe }}
                                                 </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
-                                                    <div class="form-check">{{ form.b }} <label class="form-check-label"
-                                                            for="flexCheckDefault">10:00 a.m. a 01:00 p.m.</label></div>
+                                                <div class="col-sm-3">
 
+                                                    {{ form.hora_inicioClase }}
+                                                </div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+
+                                                    {{ form.hora_finClase }}
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
-                                                    <div class="form-check">{{ form.c }} <label class="form-check-label"
-                                                            for="flexCheckDefault">02:00 p.m. a 05:00 p.m.</label></div>
-
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
-                                                    <div class="form-check">{{ form.d }} <label class="form-check-label"
-                                                            for="flexCheckDefault">05:00 p.m. a 06:30 p.m</label>.</div>
-
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-2">
-                                                    <div class="form-check">{{ form.e }} <label class="form-check-label"
-                                                            for="flexCheckDefault">06:30 p.m. a 09:30 p.m.</label></div>
-
-                                                </div>
-                                            </div></div>
-                                            
                                         </form>
 
                                     </div>
@@ -126,20 +110,44 @@
                         </div>
                     </div>
                     <!-- DataTales Example -->
+                    <div class="card">
+                        <div class="card-header">
+                            <H3>Calendario academico</H3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm" id="dataTable">
+                                    <thead class=" bg-danger text-white">
+                                        <tr>
+                                            <td>Lunes</td>
+                                            <td>Martes</td>
+                                            <td>Miercoles</td>
+                                            <td>Jueves</td>
+                                            <td>Viernes</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="album py-5 bg-light">
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                             {% for diasc in cdias.all %}
                             <div class="col">
-                                <div class="card border-danger mb-3" style="max-width: 16rem;">
-                                    <div
-                                        class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                                <div class="card border-danger mb-3" style="max-width: 18rem;">
+                                    <div class="card-header bg-danger text-white">
                                         <td>{{ diasc.dia }}</td>
-                                        <button class="btn btn-outline-light "
-                                            onclick="abrir_modal_modificarDis('{% url 'Cdiaedit'  diasc.id %}')">
-                                            E</button>
                                     </div>
                                     <div class="card-body text-danger">
-                                        <center>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" value=""
                                                 id="flexCheckDefault" {% if diasc.a %}checked{% endif %} disabled>
@@ -175,13 +183,11 @@
                                                 06:30 p.m. a 09:30 p.m.
                                             </label>
                                         </div>
-                                    </center>
                                     </div>
                                 </div>
                             </div>
                             {% endfor %}
                             <br>
-
                         </div>
                     </div>
 
@@ -191,10 +197,6 @@
                     <a class="scroll-to-top rounded" href="#page-top">
                         <i class="fas fa-angle-up"></i>
                     </a>
-
-                    <div class="modal fade" id="modificarDis" role="dialog">
-
-                    </div>
 
                     {% if error_message %}
                     <div class="modal fade" id="modal-error" tabindex="-1" role="dialog"
@@ -227,14 +229,6 @@
                         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
                         integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
                         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-                    <script type="text/javascript">
-                        var $ = jQuery.noConflict();
-                        function abrir_modal_modificarDis(url) {
-                            $('#modificarDis').load(url, function () {
-                                $(this).modal('show');
-                            });
-                        }
-                    </script>
                     {% if error_message %}
                     <script>
                         $(document).ready(function () {
@@ -242,10 +236,6 @@
                         });
                     </script>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>

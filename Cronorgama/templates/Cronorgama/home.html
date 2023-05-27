@@ -84,7 +84,9 @@
                         <a class="collapse-item" href="{% url 'proyeccion' %}">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Proyeccion</span></a>
-
+                        <a class="collapse-item" href="{% url 'salon' %}">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Salon</span></a>
                     </div>
                 </div>
             </li>
@@ -110,6 +112,12 @@
                         <a class="collapse-item" href="{% url 'mensajes_recibidos' %}">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Bandeja de Entrada</span></a>
+                        <a class="collapse-item" href="{% url 'enviar_disponibilidad' %}">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Asignar Tarea</span></a>
+                        <a class="collapse-item" href="{% url 'mensajes_disponibilidad_recibidos' %}">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Bandeja de Entrada</span></a>
                     </div>
                 </div>
             </li>
@@ -133,12 +141,14 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
                         <a class="collapse-item" href="{% url 'login' %}">Login</a>
-                        <a class="collapse-item" href="#">Register</a>
-                        <a class="collapse-item" href="{% url 'disponibilidad' %}">disponibilidad</a>
+                        <a class="collapse-item" href="{% url 'calendario' %}">Calendario</a>
+                        <a class="collapse-item" href="{% url 'disponibilidad' %}">Disponibilidad</a>
+                        <a class="collapse-item" href="{% url 'asignaturaxprofesor' %}"> asignaturaxprofesor</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
                         <a class="collapse-item" href="blank.html">Blank Page</a>
+                        <a class="collapse-item" href="{% url 'rango' %}">Calendario</a>
+                        <a class="collapse-item" href="{% url 'programacion' %}">Programacion</a>
                     </div>
                 </div>
             </li>
@@ -186,28 +196,7 @@
                     <ul class="navbar-nav ml-auto">
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-danger" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
+
 
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">

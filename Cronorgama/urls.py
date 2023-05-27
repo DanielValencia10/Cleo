@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU
+from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,programacion,Cdiaedit#,cCalendario
 
 urlpatterns = [
     path('', home, name='home'),
@@ -34,13 +34,22 @@ urlpatterns = [
     path('proyeccion/<int:id>/generar/', generar, name='generar'),
     path('desactivarpro/', desactivarpro, name='desactivarpro'),
     path('activarpro/', activarpro, name='activarpro'),
-    path('proyeccion/CproyeccionU/<int:id>/',
-         CproyeccionU, name='CproyeccionU'),
-    path('enviar-tarea/', enviar_tarea, name='enviar_tarea'),
+    path('proyeccion/CproyeccionU/<int:id>/', CproyeccionU, name='CproyeccionU'),
+    path('enviar_tarea/', enviar_tarea, name='enviar_tarea'),
+    path('enviar_disponibilidad/', enviar_disponibilidad, name='enviar_disponibilidad'),
     path('mensajes_recibidos/', mensajes_recibidos, name='mensajes_recibidos'),
-    path('confirmar-mensaje/<int:mensaje_id>/',
-         confirmar_mensaje, name='confirmar_mensaje'),
+    path('mensajes_disponibilidad_recibidos/', mensajes_disponibilidad_recibidos, name='mensajes_disponibilidad_recibidos'),
+    path('confirmar-mensaje/<int:mensaje_id>/',confirmar_mensaje, name='confirmar_mensaje'),
+    path('confirmar-disponibilidad-mensaje/<int:mensaje_id>/',confirmar_disponibilidad_mensaje,name='confirmar_disponibilidad_mensaje'),
     path('diponibilidad/', disponibilidad, name='disponibilidad'),
-    path('disponibilidad/Cdisponibilidad/<int:id>/',
-         CdisponibilidadU, name='CdisponibilidadU'),
+    path('disponibilidad/Cdisponibilidad/<int:id>/', CdisponibilidadU, name='CdisponibilidadU'),
+    path('disponibilidad/Cdia/<int:cdia_id>/', Cdiaedit, name='Cdiaedit'),
+    path('calendario/', calendarioF, name='calendario'),
+    path('asignaturaxprofesor/',asignaturaxprofesor, name='asignaturaxprofesor'),
+    #path('calendario/cCalendario/<int:id>',cCalendario, name='cCalendario'),
+    path('rango/', rango, name='rango'),
+    path('rango/modificar/<int:id>/', modificarango, name='modificarango'),
+    path('salon/', salon, name='salon'),
+    path('programacion/', programacion, name='programacion'),
+    
 ]
