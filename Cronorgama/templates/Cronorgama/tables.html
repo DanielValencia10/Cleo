@@ -109,8 +109,8 @@
                                                     {{ form.last_name }}
                                                 </div>
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-
-                                                    {{ form.password1 }}
+                                                    <input type="password" class="form-control form-control-sm"
+                                                    name="password1" placeholder="Contraseña" id="id_password1">
                                                 </div>
                                                 <div class="col-sm-3">
                                                     {{ form.groups }}
@@ -121,7 +121,9 @@
                                                     {{ form.email }}
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    {{ form.password2 }}
+                                                    <input type="password" class="form-control form-control-sm"
+                                                        name="password2" placeholder="Repita la contraseña" id="id_password2">
+
                                                 </div>
                                             </div>
                                         </form>

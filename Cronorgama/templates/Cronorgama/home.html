@@ -87,6 +87,9 @@
                         <a class="collapse-item" href="{% url 'salon' %}">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Salon</span></a>
+                        <a class="collapse-item" href="{% url 'cronograma' %}">
+                            <i class="fas fa-fw fa-table"></i>
+                            <span>Cronograma</span></a>
                     </div>
                 </div>
             </li>
@@ -108,14 +111,8 @@
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="{% url 'enviar_tarea' %}">
                             <i class="fas fa-fw fa-table"></i>
-                            <span>Asignar Tarea</span></a>
+                            <span>Solicitar Actividad</span></a>
                         <a class="collapse-item" href="{% url 'mensajes_recibidos' %}">
-                            <i class="fas fa-fw fa-table"></i>
-                            <span>Bandeja de Entrada</span></a>
-                        <a class="collapse-item" href="{% url 'enviar_disponibilidad' %}">
-                            <i class="fas fa-fw fa-table"></i>
-                            <span>Asignar Tarea</span></a>
-                        <a class="collapse-item" href="{% url 'mensajes_disponibilidad_recibidos' %}">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Bandeja de Entrada</span></a>
                     </div>
@@ -158,13 +155,6 @@
                 <a class="nav-link" href="charts.html">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Charts</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'table' %}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Usuarios</span></a>
             </li>
 
             <!-- Divider -->
@@ -425,12 +415,9 @@
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
-    <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
     <script type="text/javascript">
         var $ = jQuery.noConflict();

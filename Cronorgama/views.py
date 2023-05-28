@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CproyeccionForm, CasignaturaForm, DisponibilidadForm, CdiaForm, AsignaturaXProfesorForm, CalendarioForm, CasigXprofeForm, RangoForm,SalonForm,ProgramacionForm
-from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Disponibilidad, Cdisponibilidad, Cdia, Ccalendario, calendario, Rango, asignaturaXprofesor, casigXprofe, MensajesDisponibilidad,Salon
+from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CproyeccionForm, CasignaturaForm, DisponibilidadForm, CdiaForm, AsignaturaXProfesorForm, CalendarioForm, CasigXprofeForm, RangoForm,SalonForm,ProgramacionForm,CronogramaForm,CcronogramaForm,BitacoraForm
+from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Disponibilidad, Cdisponibilidad, Cdia, Ccalendario, calendario, Rango, asignaturaXprofesor, casigXprofe, MensajesDisponibilidad,Salon,Ccronograma,Cronograma,RegistroAsistencia
 from django.contrib.auth.models import Group
 import openpyxl
 from reportlab.lib.pagesizes import letter, inch
@@ -10,8 +10,6 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from django.forms import formset_factory
 from django.http import HttpResponse
 from reportlab.lib.units import inch
 from django.core.exceptions import ValidationError
@@ -348,7 +346,7 @@ def enviar_tarea(request):
         disponibilidades = Disponibilidad.objects.all()
         proyecciones_json = json.dumps([str(p) for p in proyecciones])
         disponibilidades_json = json.dumps([str(d) for d in disponibilidades])
-        return render(request, 'enviar_tarea.html', {'usuarios': usuarios, 'proyecciones_json': proyecciones_json, 'disponibilidades_json': disponibilidades_json})
+        return render(request, 'enviar_tarea.html', {'usuarios': usuarios, 'proyecciones_json': proyecciones_json, 'proyecciones': proyecciones, 'disponibilidades_json': disponibilidades_json,'disponibilidades': disponibilidades})
 
 
 @login_required
@@ -408,8 +406,9 @@ def confirmar_disponibilidad_mensaje(request, mensaje_id):
 
 @login_required
 def mensajes_recibidos(request):
-    mensajes = Mensajes.objects.filter(usuarios_destinatarios=request.user)
-    return render(request, 'mensajes_recibidos.html', {'mensajes': mensajes})
+    mensajesP = Mensajes.objects.filter(usuarios_destinatarios=request.user)
+    mensajesD = MensajesDisponibilidad.objects.filter(usuarios_destinatarios=request.user)
+    return render(request, 'mensajes_recibidos.html', {'mensajesP': mensajesP,'mensajesD': mensajesD})
 
 
 @login_required
@@ -639,3 +638,56 @@ def programacion(request):
     else:
         form=ProgramacionForm()
         return render (request,'Cronorgama/programacion.html',{'form':form})
+    
+
+
+
+
+@login_required
+def CcronogramaU(request, id):
+    cronograma = Cronograma.objects.get(id=id)
+    bitacoras = cronograma.ccronograma.bitacora
+    if request.method == 'POST':
+        #bitacoraform
+        form = BitacoraForm(request.POST)
+        if form.is_valid():
+            try:
+                Cbitacora = form.save(commit=False)
+                Cbitacora.save()
+                ccronograma = cronograma.ccronograma
+                ccronograma.bitacora.add(Cbitacora)
+                regAsiatencia= RegistroAsistencia.objects.create()
+                regAsiatencia.save()
+                ccronograma.registroAsistencia.add(regAsiatencia)
+                return redirect('CcronogramaU', id=id)
+            except ValidationError as e:
+                form.add_error(None, e)
+    else:       #bitacoraform
+        form = BitacoraForm()
+    return render(request, 'Cronorgama/cCronograma.html', {'form': form, 'cronograma': cronograma, 'bitacoras': bitacoras})
+
+
+@login_required
+def cronograma(request):
+    profesores = User.objects.all()
+    programas = Programas.objects.all()
+    cronogramas = Cronograma.objects.all()
+    if request.method == 'POST':
+        form = CronogramaForm(request.POST)
+        if form.is_valid():
+            try:
+                # Crear la instancia de Cproyeccion y guardarla
+                ccronograma = Ccronograma.objects.create()
+                ccronograma.save()
+
+                # Crear la instancia de Proyeccion y asignar la clave primaria de Cproyeccion a cproyeccion
+                cronograma = form.save(commit=False)
+                cronograma.ccronograma = ccronograma
+                cronograma.save()
+
+                return redirect('cronograma')
+            except ValueError as error:
+                return render(request, 'Cronorgama/Cronograma.html', {'form': form, 'error_message': str(error), 'cronogramas':cronogramas, 'profesores': profesores, 'programas': programas})
+    else:
+        form = CronogramaForm()
+    return render(request, 'Cronorgama/Cronograma.html', {'form': form, 'cronogramas':cronogramas, 'profesores': profesores, 'programas': programas})

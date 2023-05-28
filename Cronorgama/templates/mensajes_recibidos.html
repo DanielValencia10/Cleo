@@ -5,22 +5,12 @@
 <html lang="en">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Register</title>
-
     <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
         integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
 
 <body id="page-top">
@@ -38,76 +28,176 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Proyeccion</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Bandeja de entrada</h1>
                     <div class="container-fluid p-0">
 
-                        <div class="card o-hidden border-0 shadow-lg my-4">
+                        <div class="card o-hidden border-top-3 shadow-lg my-4 ">
                             <div class="card-body p-0">
                                 <!-- Nested Row within Card Body -->
+                                <ul class="nav nav-tabs bg-light" id="myTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link  border-bottom-1 active" id="home-tab"
+                                            data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
+                                            role="tab" aria-controls="home-tab-pane"
+                                            aria-selected="true">Proyeccion</button>
 
-                                <div class="col-lg-0">
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link  border-bottom-1" id="profile-tab" data-bs-toggle="tab"
+                                            data-bs-target="#profile-tab-pane" type="button" role="tab"
+                                            aria-controls="profile-tab-pane"
+                                            aria-selected="false">Disponibilidad</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link border-bottom-1" id="contact-tab" data-bs-toggle="tab"
+                                            data-bs-target="#contact-tab-pane" type="button" role="tab"
+                                            aria-controls="contact-tab-pane" aria-selected="false">Cronograma</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                                        aria-labelledby="home-tab" tabindex="0">
+                                        <div class="col-lg-0">
 
-                                    <div class="p-3">
+                                            <div class="p-3">
 
-                                        <h1>Mensajes recibidos</h1>
+                                                <h2>Proyecciones recibidas</h2>
 
-                                        {% if mensajes %}
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Emisor</th>
-                                                    <th>Mensaje</th>
-                                                    <th>Proyeccion</th>
-                                                    <th>Fecha</th>
-                                                    <th>Confirmado</th>
-                                                    <th>accion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for mensaje in mensajes %}
-                                                <tr>
-                                                    <td>{{ mensaje.usuario_emisor.username }}</td>
-                                                    <td>{{ mensaje.mensaje }}</td>
-                                                    <td><a href="{% url 'CproyeccionU' mensaje.proyeccion.id %}">Ver
-                                                            proyección</a></td>
-                                                    <td>{{ mensaje.fecha }}</td>
-                                                    <td>{% if mensaje.confirmar %}
-                                                        confirmado
-                                                        {% else %}
-                                                        no confirmado
-                                                        {% endif %}</td>
-                                                    <td>
-                                                        {% if not mensaje.confirmar %}
-                                                        <form action="{% url 'confirmar_mensaje' mensaje.id %}"
-                                                            method="post">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="btn btn-warning btn-sm">Confirmar</button>
-                                                        </form>
-                                                        {% else %}
-                                                        <form action="{% url 'confirmar_mensaje' mensaje.id %}"
-                                                            method="post">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="btn btn-warning btn-sm" disabled>Confirmar</button>
-                                                        </form>
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                        {% else %}
-                                        <p>No hay mensajes recibidos.</p>
-                                        {% endif %}
-                                        <!-- End of Page Wrapper -->
+                                                {% if mensajesP %}
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Emisor</th>
+                                                            <th>Mensaje</th>
+                                                            <th>Proyeccion</th>
+                                                            <th>Fecha</th>
+                                                            <th>Confirmado</th>
+                                                            <th>accion</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for mensaje in mensajesP %}
+                                                        <tr>
+                                                            <td>{{ mensaje.usuario_emisor.username }}</td>
+                                                            <td>{{ mensaje.mensaje }}</td>
+                                                            <td><a
+                                                                    href="{% url 'CproyeccionU' mensaje.proyeccion.id %}">Ver
+                                                                    proyección</a></td>
+                                                            <td>{{ mensaje.fecha }}</td>
+                                                            <td>{% if mensaje.confirmar %}
+                                                                confirmado
+                                                                {% else %}
+                                                                no confirmado
+                                                                {% endif %}</td>
+                                                            <td>
+                                                                {% if not mensaje.confirmar %}
+                                                                <form action="{% url 'confirmar_mensaje' mensaje.id %}"
+                                                                    method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit"
+                                                                        class="btn btn-warning btn-sm">Confirmar</button>
+                                                                </form>
+                                                                {% else %}
+                                                                <form action="{% url 'confirmar_mensaje' mensaje.id %}"
+                                                                    method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-warning btn-sm"
+                                                                        disabled>Confirmar</button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                {% else %}
+                                                <p>No hay Proyecciones recibidas.</p>
+                                                {% endif %}
+                                                <!-- End of Page Wrapper -->
+                                            </div>
+                                            <!-- Scroll to Top Button-->
+                                            <a class="scroll-to-top rounded" href="#page-top">
+                                                <i class="fas fa-angle-up"></i>
+                                            </a>
+                                            <div class="modal fade" id="editarProy" role="dialog">
+
+                                            </div>
+
+                                        </div>
                                     </div>
-                                    <!-- Scroll to Top Button-->
-                                    <a class="scroll-to-top rounded" href="#page-top">
-                                        <i class="fas fa-angle-up"></i>
-                                    </a>
-                                    <div class="modal fade" id="editarProy" role="dialog">
+                                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+                                        aria-labelledby="profile-tab" tabindex="0">
 
+                                        <div class="col-lg-0">
+
+                                            <div class="p-3">
+
+                                                <h1>Disponibilidades recibidas</h1>
+
+                                                {% if mensajesD %}
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Emisor</th>
+                                                            <th>Mensaje</th>
+                                                            <th>Proyeccion</th>
+                                                            <th>Fecha</th>
+                                                            <th>Confirmado</th>
+                                                            <th>accion</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for mensaje in mensajesD %}
+                                                        <tr>
+                                                            <td>{{ mensaje.usuario_emisor.username }}</td>
+                                                            <td>{{ mensaje.mensaje }}</td>
+                                                            <td><a
+                                                                    href="{% url 'CdisponibilidadU' mensaje.disponibilidad.id %}">Ver
+                                                                    Disponibilidad</a></td>
+                                                            <td>{{ mensaje.fecha }}</td>
+                                                            <td>{% if mensaje.confirmar %}
+                                                                confirmado
+                                                                {% else %}
+                                                                no confirmado
+                                                                {% endif %}</td>
+                                                            <td>
+                                                                {% if not mensaje.confirmar %}
+                                                                <form action="{% url 'confirmar_mensaje' mensaje.id %}"
+                                                                    method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit"
+                                                                        class="btn btn-warning btn-sm">Confirmar</button>
+                                                                </form>
+                                                                {% else %}
+                                                                <form action="{% url 'confirmar_mensaje' mensaje.id %}"
+                                                                    method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-warning btn-sm"
+                                                                        disabled>Confirmar</button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                {% else %}
+                                                <p>No hay Disponibilidades recibidas.</p>
+                                                {% endif %}
+                                                <!-- End of Page Wrapper -->
+                                            </div>
+                                            <!-- Scroll to Top Button-->
+                                            <a class="scroll-to-top rounded" href="#page-top">
+                                                <i class="fas fa-angle-up"></i>
+                                            </a>
+                                            <div class="modal fade" id="editarProy" role="dialog">
+
+                                            </div>
+
+                                        </div>
                                     </div>
-
+                                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
+                                        aria-labelledby="contact-tab" tabindex="0">...</div>
                                 </div>
                             </div>
                         </div>
@@ -131,15 +221,8 @@
                 });
             </script>
             {% endif %}
-            <script type="text/javascript">
-                var $ = jQuery.noConflict();
-                function abrir_modal_editarProy(url) {
-                    $('#editarProy').load(url, function () {
-                        $(this).modal('show');
-                    });
-                }
-            </script>
-
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Dia, Disponibilidad, Cdisponibilidad, Cdia, asignaturaXprofesor, calendario, casigXprofe, Rango, MensajesDisponibilidad, Salon, Tiposalon,Programacion
+from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Dia, Disponibilidad, Cdisponibilidad, Cdia, asignaturaXprofesor, calendario, casigXprofe, Rango, MensajesDisponibilidad, Salon, Tiposalon,Programacion,Cronograma,Ccronograma,Bitacora
 from django.contrib.auth.models import Group
 
 
@@ -267,3 +267,33 @@ class ProgramacionForm(forms.ModelForm):
             'hora': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'rows': 3, 'placeholder': 'Nombre del salon'}),
             'dia': forms.Select(choices=Dia.objects.all().values_list('Nombre', 'Nombre'),attrs={'class': 'form-control form-control-sm', 'placeholder': 'Capacidad'})
         }
+
+
+class CronogramaForm(forms.ModelForm):
+    class Meta:
+        model = Cronograma
+        fields = ['programa','Profesor']
+        widgets = {
+            'programa': forms.Select(choices=Programas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Programas'}),
+            'Profesor': forms.Select(choices=User.objects.all().values_list('username', 'username'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Profesor'}),
+        }
+
+class CcronogramaForm(forms.ModelForm):
+    class Meta:
+        model = Ccronograma
+        fields = ['asignatura']
+        widgets = {
+            'asignatutra': forms.Select(choices=Asignaturas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Asisgnatura'}),
+         }
+        
+class BitacoraForm(forms.ModelForm):
+    class Meta:
+        model = Bitacora
+        fields = ['semana' , 'fecha', 'Tema', 'material']
+        widgets = {
+            'semana': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': '#Semana'}),
+            'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local','class': 'datepicker','id': "date"}),
+            'Tema': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'tema'}),
+            'material': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'material'}),
+        }
+       

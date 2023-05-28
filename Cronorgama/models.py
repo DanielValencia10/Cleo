@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 
 
 class User(AbstractUser):
@@ -49,8 +47,7 @@ class Asignaturas(models.Model):
 
 class Casignatura(models.Model):
     id = models.AutoField(primary_key=True)
-    asignaturas = models.ForeignKey(
-        Asignaturas, on_delete=models.CASCADE, related_name='cproyecciones')
+    asignaturas = models.ForeignKey(Asignaturas, on_delete=models.CASCADE, related_name='cproyecciones')
     total_semanas = models.IntegerField(null=True, blank=True)
     num_docentes = models.IntegerField(null=True, blank=True, default=0)
 
@@ -73,8 +70,7 @@ class Salon(models.Model):
 
 class Cproyeccion(models.Model):
     id = models.AutoField(primary_key=True)
-    Casignatura = models.ManyToManyField(
-        Casignatura, related_name='cproyecciones')
+    Casignatura = models.ManyToManyField(Casignatura, related_name='cproyecciones')
 
 
 class Proyeccion(models.Model):
@@ -117,29 +113,6 @@ class Programacion(models.Model):
     id_salon = models.ForeignKey(Salon, on_delete=models.CASCADE, default="", blank=True)
     hora = models.CharField(max_length=200)
     dia = models.CharField(max_length=200)
-
-
-class Bitacora(models.Model):
-    id_bitacora = models.AutoField(primary_key=True)
-    id_authuser = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
-    id_programas = models.ForeignKey(Programas, on_delete=models.CASCADE, default="", blank=True)
-    id_asignaturas = models.ForeignKey(Asignaturas, on_delete=models.CASCADE, default="", blank=True)
-    semana = models.CharField(max_length=200)
-    fecha = models.CharField(max_length=200)
-    Tema = models.CharField(max_length=200)
-
-
-class RegistroAsistencia(models.Model):
-
-    fecha = models.CharField(max_length=200)
-    semana = models.CharField(max_length=200)
-    fecha_recuperar = models.CharField(max_length=200)
-    tema_recuperar = models.CharField(max_length=200)
-    total_hora = models.CharField(max_length=200)
-    hora_entrada = models.CharField(max_length=200)
-    hora_salida = models.CharField(max_length=200)
-    id_bitacora = models.ForeignKey(
-        Bitacora, on_delete=models.CASCADE, default="", blank=True)
 
 
 class Dia(models.Model):
@@ -234,3 +207,35 @@ class MensajesDisponibilidad(models.Model):
 
     def __str__(self):
         return f"Mensaje de disponibilidad: {self.id}"
+
+class Bitacora(models.Model): 
+    id_bitacora = models.AutoField(primary_key=True)
+    semana = models.CharField(max_length=100)
+    fecha = models.DateTimeField()
+    Tema = models.CharField(max_length=300)
+    material = models.CharField(max_length=200, default="")
+
+class RegistroAsistencia(models.Model):
+    id = models.AutoField(primary_key=True)
+    fecha = models.CharField(max_length=200, null=True)
+    fecha_recuperar = models.CharField(max_length=200, null=True)
+    Checkfecha_recuperar = models.BooleanField(default=False)
+    tema_recuperar = models.CharField(max_length=200, null=True)
+    Checktema_recuperar = models.BooleanField(default=False)
+    hora_entrada = models.CharField(max_length=200, null=True)
+    hora_salida = models.CharField(max_length=200, null=True)
+    observaciones = models.CharField(max_length=300, default="")
+    checkAsistencia=models.BooleanField(default=False)
+
+class Ccronograma(models.Model):
+    id = models.AutoField(primary_key=True)
+    asignatura = models.ForeignKey(Asignaturas,on_delete=models.CASCADE, null=True, blank=True)
+    bitacora = models.ManyToManyField(Bitacora, related_name='Ccronogramas')
+    registroAsistencia = models.ManyToManyField(RegistroAsistencia,related_name='resgistro_de_asistencia') 
+
+class Cronograma(models.Model):
+    id = models.AutoField(primary_key=True)
+    programa = models.ForeignKey(Programas, on_delete=models.CASCADE, default=None, blank=True)
+    Profesor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    ccronograma = models.ForeignKey(Ccronograma, on_delete=models.CASCADE, default=None, blank=True, related_name='Cronogramas')
+    activo = models.BooleanField(default=True)

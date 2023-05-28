@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,programacion,Cdiaedit#,cCalendario
+from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,programacion,Cdiaedit,cronograma,CcronogramaU#,cCalendario
 
 urlpatterns = [
     path('', home, name='home'),
@@ -51,5 +51,7 @@ urlpatterns = [
     path('rango/modificar/<int:id>/', modificarango, name='modificarango'),
     path('salon/', salon, name='salon'),
     path('programacion/', programacion, name='programacion'),
+    path('cronograma/', cronograma, name='cronograma'),
+    path('proyeccion/CcronogramaU/<int:id>/', CcronogramaU, name='CcronogramaU'),
     
 ]
