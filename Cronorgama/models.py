@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Permission
 
 
 class User(AbstractUser):
@@ -10,14 +11,12 @@ class User(AbstractUser):
     def __str__(self):
         return self.first_name
 
-
 class TipoJornada(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=8)
 
     def __str__(self):
         return self.nombre
-
 
 class Programas(models.Model):
     id = models.AutoField(primary_key=True)
@@ -29,7 +28,6 @@ class Programas(models.Model):
 
     def __str__(self):
         return self.nombre+" "+self.jornada.nombre
-
 
 class Asignaturas(models.Model):
     id = models.AutoField(primary_key=True)
@@ -44,7 +42,6 @@ class Asignaturas(models.Model):
     def __str__(self):
         return self.codigo+" "+self.nombre
 
-
 class Casignatura(models.Model):
     id = models.AutoField(primary_key=True)
     asignaturas = models.ForeignKey(Asignaturas, on_delete=models.CASCADE, related_name='cproyecciones')
@@ -57,7 +54,6 @@ class Tiposalon(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class Salon(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=200)
@@ -67,11 +63,9 @@ class Salon(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class Cproyeccion(models.Model):
     id = models.AutoField(primary_key=True)
     Casignatura = models.ManyToManyField(Casignatura, related_name='cproyecciones')
-
 
 class Proyeccion(models.Model):
     id = models.AutoField(primary_key=True)
@@ -91,7 +85,6 @@ class Proyeccion(models.Model):
     #         raise ValueError("la proyeccion solo acepta asignaturas relacionadas con El tipo de proyeccion")
     #     super().save(*args, **kwargs)
 
-
 class Mensajes(models.Model):
     id = models.AutoField(primary_key=True)
     fecha = models.DateTimeField(auto_now=True)
@@ -105,22 +98,11 @@ class Mensajes(models.Model):
     def __str__(self):
         return f"Mensaje {self.id}"
 
-
-class Programacion(models.Model):
-    id_asignaturas = models.ForeignKey(Asignaturas, on_delete=models.CASCADE, default="", blank=True)
-    id_programas = models.ForeignKey(Programas, on_delete=models.CASCADE, default="", blank=True)
-    id_authuser = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
-    id_salon = models.ForeignKey(Salon, on_delete=models.CASCADE, default="", blank=True)
-    hora = models.CharField(max_length=200)
-    dia = models.CharField(max_length=200)
-
-
 class Dia(models.Model):
     Nombre = models.CharField(max_length=9)
 
     def __str__(self):
         return self.Nombre
-
 
 class Cdia(models.Model):
     dia = models.ForeignKey(Dia, max_length=200, on_delete=models.CASCADE, default="", blank=True)
@@ -129,6 +111,7 @@ class Cdia(models.Model):
     c = models.BooleanField(default=0)
     d = models.BooleanField(default=0)
     e = models.BooleanField(default=0)
+    activo= models.BooleanField(default=True)
 
 class Rango(models.Model):
     id = models.AutoField(primary_key=True)
@@ -146,25 +129,26 @@ class Cdisponibilidad(models.Model):
             raise ValidationError("Ya existe un cdia con el mismo día en esta Cdisponibilidad.")
         
         super().save(*args, **kwargs)
-
+    class Meta:
+            permissions = [
+            ('puede_ver_disponibilidad', 'Puede ver Disponibilidad'),
+            ('puede_editar_disponibilidad', 'Puede editar Disponibilidad'),
+            # Agrega más permisos según tus necesidades
+        ]    
 
 class Disponibilidad(models.Model):
     id = models.AutoField(primary_key=True)
-    Profesor = models.ForeignKey(
-        User, on_delete=models.CASCADE, default="", blank=True)
-    cdisponibilidad = models.ForeignKey(
-        Cdisponibilidad, on_delete=models.CASCADE, default=None, blank=True, related_name='disponibilidad')
+    Profesor = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
+    cdisponibilidad = models.ForeignKey(Cdisponibilidad, on_delete=models.CASCADE, default=None, blank=True, related_name='disponibilidad')
 
     def __str__(self):
         return f"Disponibilidad de: {self.Profesor}"
-
 
 class asignaturaXprofesor(models.Model):
     id = models.AutoField(primary_key=True)
     Profesor = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
     Asignatura= models.ForeignKey(Asignaturas, on_delete=models.CASCADE, default="", blank=True)
 
-    
 class casigXprofe(models.Model):
     id = models.AutoField(primary_key=True)
     asigXprofe=models.ForeignKey(asignaturaXprofesor, on_delete=models.CASCADE, default="", blank=True)
@@ -194,7 +178,6 @@ class calendario(models.Model):
         if calendario.objects.filter(Programa=self.Programa).exists():
             raise ValidationError("Ya existe un calendario para este programa.")
         
-
 class MensajesDisponibilidad(models.Model):
     id = models.AutoField(primary_key=True)
     fecha = models.DateTimeField(auto_now=True)
@@ -238,4 +221,40 @@ class Cronograma(models.Model):
     programa = models.ForeignKey(Programas, on_delete=models.CASCADE, default=None, blank=True)
     Profesor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     ccronograma = models.ForeignKey(Ccronograma, on_delete=models.CASCADE, default=None, blank=True, related_name='Cronogramas')
+    asignatura = models.ForeignKey(Asignaturas,on_delete=models.CASCADE, null=True, blank=True)
     activo = models.BooleanField(default=True)
+
+class BDcontratista(models.Model):
+    id=models.AutoField(primary_key=True)
+    nombre=models.CharField(max_length=11)
+    def __str__(self):
+        return f" {self.nombre}"
+    
+class Grupo(models.Model):
+    id=models.AutoField(primary_key=True)
+    nombre=models.CharField(max_length=3)
+    def __str__(self):
+        return f" {self.nombre}"
+
+class Programacion(models.Model):
+    id_asignaturas = models.ForeignKey(Asignaturas, on_delete=models.CASCADE, default="", blank=True)
+    id_authuser = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
+    id_salon = models.ForeignKey(Salon, on_delete=models.CASCADE, default="", blank=True)
+    grupo=models.ForeignKey(Grupo, on_delete=models.CASCADE, default="", blank=True)
+    bdcontratista=models.ForeignKey(BDcontratista, on_delete=models.CASCADE, default="", blank=True)
+    Rsala=models.BooleanField(default=False)
+    observacion=models.CharField(max_length=300, blank=True,default="",null=True)
+    Cupo=models.IntegerField(null=True, blank=True)
+    CupoG=models.IntegerField(null=True, blank=True)
+    CupoPostM=models.IntegerField(null=True, blank=True)
+
+class Cprogramacion(models.Model):
+     id=models.AutoField(primary_key=True)
+     programacion=models.ManyToManyField(Programacion, related_name='cprogramacion')
+
+class itinerario(models.Model):
+    id=models.AutoField(primary_key=True)
+    programa=models.ForeignKey(Programas, on_delete=models.CASCADE, default="", blank=True)
+    cprogramacion = models.ForeignKey(Cprogramacion, on_delete=models.CASCADE, default=None, blank=True, related_name='programaciones')
+    activo = models.BooleanField(default=True)
+

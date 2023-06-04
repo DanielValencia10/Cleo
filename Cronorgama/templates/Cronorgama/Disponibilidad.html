@@ -142,6 +142,7 @@
                                             <th>Profesor</th>
                                             <th>Dia</th>
                                             <th>Hora</th>
+                                            <th>Estado</th>
 
                                         </tr>
                                     </thead>
@@ -150,7 +151,7 @@
                                             <th>Profesor</th>
                                             <th>Dia</th>
                                             <th>Hora</th>
-
+                                            <th>Estado</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -161,6 +162,11 @@
                                             <td>{{ Disponibilidad.Profesor }}</td>
                                             <td>{{ dia.dia }}</td>
                                             <td>07:00 a.m. a 10:00 a.m.</td>
+                                            <td>{% if dia.activo %}
+                                                habilitado
+                                            {% else %}
+                                                deshabilitado
+                                            {% endif %}</td>
                                         </tr>
                                         {% endif %}
                                         {% if dia.b %}
@@ -168,6 +174,11 @@
                                             <td>{{ Disponibilidad.Profesor }}</td>
                                             <td>{{ dia.dia }}</td>
                                             <td>10:00 a.m. a 01:00 p.m.</td>
+                                            <td>{% if dia.activo %}
+                                                habilitado
+                                            {% else %}
+                                                deshabilitado
+                                            {% endif %}</td>
                                         </tr>
                                         {% endif %}
                                         {% if dia.c %}
@@ -175,6 +186,11 @@
                                             <td>{{ Disponibilidad.Profesor }}</td>
                                             <td>{{ dia.dia }}</td>
                                             <td>02:00 p.m. a 05:00 p.m.</td>
+                                            <td>{% if dia.activo %}
+                                                habilitado
+                                            {% else %}
+                                                deshabilitado
+                                            {% endif %}</td>
                                         </tr>
                                         {% endif %}
                                         {% if dia.d %}
@@ -182,6 +198,11 @@
                                             <td>{{ Disponibilidad.Profesor }}</td>
                                             <td>{{ dia.dia }}</td>
                                             <td> 05:00 p.m. a 06:30 p.m.</td>
+                                            <td>{% if dia.activo %}
+                                                habilitado
+                                            {% else %}
+                                                deshabilitado
+                                            {% endif %}</td>
                                         </tr>
                                         {% endif %}
                                         {% if dia.e %}
@@ -189,6 +210,11 @@
                                             <td>{{ Disponibilidad.Profesor }}</td>
                                             <td>{{ dia.dia }}</td>
                                             <td>06:30 p.m. a 09:30 p.m.</td>
+                                            <td>{% if dia.activo %}
+                                                habilitado
+                                            {% else %}
+                                                deshabilitado
+                                            {% endif %}</td>
                                         </tr>
                                         {% endif %}
                                         {% endfor %}

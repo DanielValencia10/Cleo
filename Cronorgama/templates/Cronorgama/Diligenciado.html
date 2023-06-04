@@ -1,0 +1,47 @@
+{% extends 'Cronorgama/home.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Page Heading -->
+<h1 class="h3 mb-4 text-gray-800">Cronograma</h1>
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Profesor</th>
+                            <th>Estado</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Profesor</th>
+                            <th>Estado</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for usuario, conteo in usuarios_con_semanas %}
+                        <tr>
+                          <td>{{ usuario }}</td>
+                          {% if conteo != 0 %}
+                          <td>Si registro</td>
+                        {% else %}
+                          <td>No registro</td>
+                        {% endif %}
+                          <td>{{ conteo }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

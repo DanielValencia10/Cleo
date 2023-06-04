@@ -1,24 +1,37 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CproyeccionForm, CasignaturaForm, DisponibilidadForm, CdiaForm, AsignaturaXProfesorForm, CalendarioForm, CasigXprofeForm, RangoForm,SalonForm,ProgramacionForm,CronogramaForm,CcronogramaForm,BitacoraForm
-from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Disponibilidad, Cdisponibilidad, Cdia, Ccalendario, calendario, Rango, asignaturaXprofesor, casigXprofe, MensajesDisponibilidad,Salon,Ccronograma,Cronograma,RegistroAsistencia
+from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CproyeccionForm, CasignaturaForm, DisponibilidadForm, CdiaForm, AsignaturaXProfesorForm, CalendarioForm, CasigXprofeForm, RangoForm,SalonForm,ProgramacionForm,CronogramaForm,CcronogramaForm,BitacoraForm,itinerarioForm,BitacoraEditForm
+from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Disponibilidad, Cdisponibilidad, Cdia, Ccalendario, calendario, Rango, asignaturaXprofesor, casigXprofe, MensajesDisponibilidad,Salon,Ccronograma,Cronograma,RegistroAsistencia,itinerario,Cprogramacion,Programacion,Bitacora
 from django.contrib.auth.models import Group
 import openpyxl
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle,Paragraph
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from reportlab.lib.units import inch
 from django.core.exceptions import ValidationError
 from datetime import datetime
 import json
+from django.db.models import Count
+
 
 
 # Create your views here.
+def group_required(*group_names):
+    """Decorador para restringir el acceso basado en grupos."""
 
+    def decorator(view_func):
+        @login_required
+        @user_passes_test(lambda u: u.groups.filter(name__in=group_names).exists(), login_url='/')
+        def wrapper(request, *args, **kwargs):
+            return view_func(request, *args, **kwargs)
+        return wrapper
+
+    return decorator
 
 def login(request):
     return render(request, 'registration/login.html')
@@ -416,8 +429,8 @@ def mensajes_disponibilidad_recibidos(request):
     mensajes = MensajesDisponibilidad.objects.filter(usuarios_destinatarios=request.user)
     return render(request, 'mensajes_disponibilidad_recibidos.html', {'mensajes': mensajes})
 
-
 @login_required
+@group_required('Técnico de apoyo','Secretaria Academica','Profesor de apoyo','Profesor')
 def disponibilidad(request):
     disponibilidades = Disponibilidad.objects.all()
     if request.method == 'POST':
@@ -463,7 +476,8 @@ def CdisponibilidadU(request, id):
     else:
         error_message = "No está habilitado el registro de la disponibilidad."
         return render(request, 'Cronorgama/DisponibilidadXusuario.html', {'cdias': cdias, 'error_message': error_message,'disponibilidad':disponibilidad})
-    
+
+@group_required('Profesor','Secretaria Academica','Profesor de apoyo')   
 def Cdiaedit(request, cdia_id):
 
     # Verifica si ya existe un objeto Cdia con el cdia_id especificado y que esté asociado a la Cdisponibilidad actual
@@ -626,48 +640,52 @@ def salon(request):
     return render(request, 'Cronorgama/salon.html', {'form':form,'salones': salones})
 
 
+# @login_required
+# def programacion(request):
+#     if request.method =='POST':
+#         form=ProgramacionForm(request.Post)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('Programacion')
+#     else:
+#         form=ProgramacionForm()
+#         return render (request,'Cronorgama/programacion.html',{'form':form})
     
+def obtener_profesores():
+    grupo_profesor = Group.objects.get(name='Profesor')
+    profesores = User.objects.filter(groups=grupo_profesor)
+    return profesores
 
 @login_required
-def programacion(request):
-    if request.method =='POST':
-        form=ProgramacionForm(request.Post)
-        if form.is_valid():
-            form.save()
-            return redirect('Programacion')
-    else:
-        form=ProgramacionForm()
-        return render (request,'Cronorgama/programacion.html',{'form':form})
-    
-
-
-
-
-@login_required
+@group_required('Profesor','Secretaria Academica')
 def CcronogramaU(request, id):
     cronograma = Cronograma.objects.get(id=id)
     bitacoras = cronograma.ccronograma.bitacora
     if request.method == 'POST':
-        #bitacoraform
+       
         form = BitacoraForm(request.POST)
         if form.is_valid():
             try:
                 Cbitacora = form.save(commit=False)
                 Cbitacora.save()
+
                 ccronograma = cronograma.ccronograma
                 ccronograma.bitacora.add(Cbitacora)
+
                 regAsiatencia= RegistroAsistencia.objects.create()
                 regAsiatencia.save()
                 ccronograma.registroAsistencia.add(regAsiatencia)
+
                 return redirect('CcronogramaU', id=id)
             except ValidationError as e:
                 form.add_error(None, e)
-    else:       #bitacoraform
+    else:      
         form = BitacoraForm()
     return render(request, 'Cronorgama/cCronograma.html', {'form': form, 'cronograma': cronograma, 'bitacoras': bitacoras})
 
 
 @login_required
+@group_required('Profesor','Secretaria Academica')
 def cronograma(request):
     profesores = User.objects.all()
     programas = Programas.objects.all()
@@ -676,11 +694,11 @@ def cronograma(request):
         form = CronogramaForm(request.POST)
         if form.is_valid():
             try:
-                # Crear la instancia de Cproyeccion y guardarla
+                
                 ccronograma = Ccronograma.objects.create()
                 ccronograma.save()
 
-                # Crear la instancia de Proyeccion y asignar la clave primaria de Cproyeccion a cproyeccion
+                
                 cronograma = form.save(commit=False)
                 cronograma.ccronograma = ccronograma
                 cronograma.save()
@@ -691,3 +709,252 @@ def cronograma(request):
     else:
         form = CronogramaForm()
     return render(request, 'Cronorgama/Cronograma.html', {'form': form, 'cronogramas':cronogramas, 'profesores': profesores, 'programas': programas})
+
+@login_required
+def Itinerario(request):
+    itinerarios=itinerario.objects.all()
+    if request.method == 'POST':
+        form = itinerarioForm(request.POST)
+        if form.is_valid():
+            try:
+                
+                cprogramacion = Cprogramacion.objects.create()
+                cprogramacion.save()
+
+                
+                itinerarioU = form.save(commit=False)
+                itinerarioU.cprogramacion = cprogramacion
+                itinerarioU.save()
+
+                return redirect('Itinerario')
+            except ValueError as error:
+                return render(request, 'Cronorgama/Itinerario.html', {'form': form, 'error_message': str(error), 'itinerarios':itinerarios})
+    else:
+        form = itinerarioForm()
+    return render(request, 'Cronorgama/Itinerario.html', {'form': form, 'itinerarios':itinerarios })
+
+def cronogramaH( profesores, programas,asignatura):
+    ccronograma = Ccronograma.objects.create()
+    ccronograma.save()
+
+    cronograma = Cronograma.objects.create(
+        ccronograma=ccronograma,
+        Profesor=profesores,
+        programa=programas,
+        asignatura=asignatura,
+        activo=True
+            )
+    cronograma.save()        
+
+@login_required
+def CprogramacionU(request, id):
+    itinerarioU = itinerario.objects.get(id=id)
+    programacion = itinerarioU.cprogramacion.programacion
+    disponibilidad= Disponibilidad.objects.all()
+    if request.method == 'POST':
+        programaH = itinerarioU.programa
+        print(programaH)
+        profesor = request.POST.get('id_authuser')
+        print(profesor)
+        asignatura = request.POST.get('id_asignaturas') 
+        print(asignatura)
+        form = ProgramacionForm(request.POST)
+        if form.is_valid():
+            try:
+                programacionU = form.save(commit=False)
+                programacionU.save()
+                #cada ves que traiga esto que saque al profesor que esta aqui, tambien a la asignatura y al programa
+                #lo envia a la funcion del cronograma y la crea.
+                profesorH = User.objects.get(id=profesor)
+                asignaturaH=Asignaturas.objects.get(id=asignatura)
+                
+                cronogramaH(profesorH,programaH,asignaturaH)
+
+                cprogramacion = itinerarioU.cprogramacion
+                cprogramacion.programacion.add(programacionU)
+
+                return redirect('CprogramacionU', id=id)
+            except ValidationError as e:
+                form.add_error(None, e)
+    else:      
+        form = ProgramacionForm()
+    return render(request, 'Cronorgama/programacion.html', {'form': form, 'itinerarioU': itinerarioU, 'programacion': programacion,'disponibilidad':disponibilidad})
+
+@login_required
+@group_required('Secretaria Academica')
+def desactivardis(request, cdia_id):
+    
+    disponibilidad = Cdia.objects.get(id=cdia_id)
+    disponibilidad.activo = False
+    disponibilidad.save()
+    return redirect('disponibilidad')
+
+
+@login_required
+@group_required('Secretaria Academica')
+def activardis(request, cdia_id):
+    disponibilidad = Cdia.objects.get(id=cdia_id)
+    disponibilidad.activo = True
+    disponibilidad.save()
+    return redirect('disponibilidad')
+
+def obtener_opciones_filtradas(request):
+    valor_seleccionado = request.GET.get('valor')
+
+    # Realizar la filtración de datos en la vista
+    disponibilidad_filtrada = Disponibilidad.objects.filter(Profesor=valor_seleccionado)
+
+    # Generar las opciones para el select2
+    opciones_html = ""
+    for objeto in disponibilidad_filtrada:
+        opciones_html += f'<option value="{objeto.id}">{objeto.cdisponibilidad}</option>'
+    print(opciones_html)
+    return JsonResponse({'opciones_html': opciones_html})
+
+def modificarcro(request, id_bitacora):
+
+    # Verifica si ya existe un objeto Cdia con el cdia_id especificado y que esté asociado a la Cdisponibilidad actual
+    bitacoras = Bitacora.objects.get(id_bitacora=id_bitacora)
+
+    if request.method == 'POST':
+        # Si se envió un formulario con datos POST, crea una instancia de CdiaForm con los datos recibidos
+        form = BitacoraEditForm(request.POST, instance=bitacoras)
+        if form.is_valid():
+            # Guarda los cambios en el objeto Cdia
+            form.save()
+            return redirect('CcronogramaU',id=id_bitacora)  # Reemplaza 'ruta_de_redireccionamiento' con la URL a la que deseas redireccionar después de la modificación
+    else:
+        # Si no se envió un formulario POST, muestra el formulario para editar el objeto Cdia
+        form = BitacoraEditForm(instance=bitacoras)
+
+    return render(request, 'Cronorgama/modificarBitacora.html', {'form': form,'bitacoras':bitacoras})
+
+
+@login_required
+def desactivarcro(request, cdia_id):
+    cronograma = Cronograma.objects.get(id=cdia_id)
+    cronograma.activo = False
+    cronograma.save()
+    return redirect('cronograma')
+
+
+@login_required
+def activarcro(request, cdia_id):
+    cronograma = Cronograma.objects.get(id=cdia_id)
+    cronograma.activo = True
+    cronograma.save()
+    return redirect('cronograma')
+
+
+
+@login_required
+def generar_cronograma(request, id):
+    if request.method == 'POST':
+        cronograma = Cronograma.objects.get(pk=id)
+        bitacoras = cronograma.ccronograma.bitacora.all()
+
+        data = []
+        for bitacora in bitacoras:
+            row = [
+                bitacora.semana,
+                bitacora.fecha,
+                bitacora.Tema,
+                bitacora.material,
+            ]
+            data.append(row)
+
+        programa = cronograma.programa.nombre
+        profesor = cronograma.Profesor
+        asignatura = cronograma.asignatura
+
+        
+        PAGE_WIDTH = sum([1.2, 1.8, 1.6, 1.8]) * inch + 1 * inch
+        PAGE_HEIGHT = letter[0]
+        page_size = (PAGE_WIDTH, PAGE_HEIGHT)
+        doc = SimpleDocTemplate("cronograma.pdf", pagesize=page_size)
+        styles = getSampleStyleSheet()
+        table_style = TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.red),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ("VALIGN", (0, 0), (-1, 0), "MIDDLE"),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 14),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.white),
+            ("TEXTCOLOR", (0, 1), (-1, -1), colors.black),
+            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 1), (-1, -1), 12),
+            ("BOTTOMPADDING", (0, 1), (-1, -1), 6),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black)
+        ])
+
+        styles = getSampleStyleSheet()
+        programa_style = ParagraphStyle(
+            name='ProgramaStyle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.black,
+            
+        )
+        profesor_style = ParagraphStyle(
+            name='ProfesorStyle',
+            parent=styles['Heading1'],
+            fontSize=14,
+            textColor=colors.black,
+            spaceAfter=12,
+            
+        )
+        asignatura_style = ParagraphStyle(
+            name='AsignaturaStyle',
+            parent=styles['Heading1'],
+            fontSize=14,
+            textColor=colors.black,
+            
+        )
+
+        elements = []
+        elements.append(Paragraph("Programa: <b>" + programa + "</b>", programa_style))
+        elements.append(Paragraph("Asignatura: <i>" + asignatura.nombre + "</i>", asignatura_style))  
+        elements.append(Paragraph("Profesor: <i>" + profesor.first_name+" "+profesor.last_name + "</i>", profesor_style))
+        elements.append(Paragraph(""))
+
+        header = ['Semana', 'Fecha', 'Tema', 'Material']
+        data.insert(0, header)
+        table = Table(data)
+        table.setStyle(table_style)
+        elements.append(table)
+
+        doc.build(elements)
+
+        with open("cronograma.pdf", "rb") as f:
+            response = HttpResponse(f.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename=cronograma.pdf'
+            return response
+    else:
+        return render(request, 'Cronorgama/Cronograma.html')
+
+@login_required
+def diligenciado(request):
+    
+    
+    
+    semanasContadas = []
+    usuariosobtenidos = []
+
+    usuarios = obtener_profesores().annotate(total_bitacoras=Count('cronograma__ccronograma__bitacora'))
+
+    for usuario in usuarios:
+        conteo = usuario.total_bitacoras if usuario.total_bitacoras else 0
+        semanasContadas.append(conteo)
+        usuariosobtenidos.append(usuario)
+
+    usuarios_con_semanas = zip(usuariosobtenidos, semanasContadas)
+
+    context = {
+        'usuarios_con_semanas': usuarios_con_semanas
+    }
+
+    return render(request, 'Cronorgama/Diligenciado.html', context)
+
+  

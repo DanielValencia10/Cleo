@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Dia, Disponibilidad, Cdisponibilidad, Cdia, asignaturaXprofesor, calendario, casigXprofe, Rango, MensajesDisponibilidad, Salon, Tiposalon,Programacion,Cronograma,Ccronograma,Bitacora
+from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Dia, Disponibilidad, Cdisponibilidad, Cdia, asignaturaXprofesor, calendario, casigXprofe, Rango, MensajesDisponibilidad, Salon, Tiposalon,Programacion,Cronograma,Ccronograma,Bitacora,Grupo,BDcontratista,itinerario
 from django.contrib.auth.models import Group
 
 
@@ -111,7 +111,7 @@ class TareaForm(forms.ModelForm):
         widgets = {
             'mensaje': forms.Textarea(attrs={'class': 'form-control form-control-sm', 'rows': 3, 'placeholder': 'Descripción de la tarea', 'placeholder': 'Mensaje'}),
             'usuario_emisor': forms.Select(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
-            'proyeccion': forms.Select(choices=Proyeccion.objects.all().values_list('programas', 'programas'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
+            'proyeccion': forms.Select(choices=Proyeccion.objects.all().values_list('id', 'programas'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
         }
 
 
@@ -129,7 +129,7 @@ class TareadisponForm(forms.ModelForm):
         widgets = {
             'mensaje': forms.Textarea(attrs={'class': 'form-control form-control-sm', 'rows': 3, 'placeholder': 'Descripción de la tarea', 'placeholder': 'Mensaje'}),
             'usuario_emisor': forms.Select(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
-            'disponibilidad': forms.Select(choices=Disponibilidad.objects.all().values_list('Profesor', 'Profesor'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
+            'disponibilidad': forms.Select(choices=Disponibilidad.objects.all().values_list('id', 'Profesor'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Proyeccion'}),
         }
 
 
@@ -255,27 +255,38 @@ class SalonForm(forms.ModelForm):
 class ProgramacionForm(forms.ModelForm):
     class Meta:
         model = Programacion
-        fields = ['id_asignaturas', 'id_programas',
-                  'id_authuser', 'id_salon', 'hora', 'dia']
+        fields = ['id_asignaturas','id_authuser', 'id_salon', 'Rsala','observacion','Cupo','CupoG','CupoPostM', 'grupo',
+    'bdcontratista']
 
         widgets = {
 
-            'id_asignaturas': forms.Select(choices=Asignaturas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Asignatura'}),
-            'id_programas': forms.Select(choices=Programas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Programas'}),
-            'id_authuser': forms.Select(choices=User.objects.all().values_list('first_name', 'first_name'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Profesor'}),
-            'id_salon': forms.Select(choices=Salon.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Salon'}),
-            'hora': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'rows': 3, 'placeholder': 'Nombre del salon'}),
-            'dia': forms.Select(choices=Dia.objects.all().values_list('Nombre', 'Nombre'),attrs={'class': 'form-control form-control-sm', 'placeholder': 'Capacidad'})
+            'id_asignaturas': forms.Select(choices=Asignaturas.objects.all().values_list('id', 'nombre'), attrs={'class': 'selectpicker form-control form-control-sm', 'placeholder': 'Asignatura'}),
+            'id_authuser': forms.Select(choices=User.objects.all().values_list('id', 'first_name'), attrs={'class': 'selectpicker form-control form-control-sm', 'placeholder': 'Profesor','id':'select1'}),
+            'id_salon': forms.Select(choices=Salon.objects.all().values_list('id', 'nombre'), attrs={'class': 'selectpicker form-control form-control-sm', 'placeholder': 'Salon'}),
+            'grupo': forms.Select(choices=Grupo.objects.all().values_list('id', 'nombre'), attrs={'class': 'selectpicker form-control form-control-sm', 'placeholder': 'Grupo'}),
+    'bdcontratista':forms.Select(choices=BDcontratista.objects.all().values_list('id', 'nombre'), attrs={'class': ' selectpicker form-control form-control-sm', 'placeholder': '¿Profesor elegible?'}),
+            'observacion':forms.Textarea(attrs={'class': 'form-control form-control-sm', 'rows': 3, 'placeholder': 'Descripción de la tarea', 'placeholder': 'Observacion'}),
+            'Cupo':forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Cupo'}),
+            'CupoG':forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Cupos Genericos'}),
+            'CupoPostM':forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Cupos Post-Matricula'})
         }
 
+class itinerarioForm(forms.ModelForm):
+    class Meta:
+        model = itinerario
+        fields = ['programa']
+        widgets = {
+            'programa': forms.Select(choices=Programas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Programas'}),    
+            }
 
 class CronogramaForm(forms.ModelForm):
     class Meta:
         model = Cronograma
-        fields = ['programa','Profesor']
+        fields = ['programa','Profesor','asignatura']
         widgets = {
             'programa': forms.Select(choices=Programas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Programas'}),
             'Profesor': forms.Select(choices=User.objects.all().values_list('username', 'username'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Profesor'}),
+            'asignatura': forms.Select(choices=Asignaturas.objects.all().values_list('nombre', 'nombre'), attrs={'class': 'form-control form-control-sm', 'placeholder': 'Asisgnatura'}),
         }
 
 class CcronogramaForm(forms.ModelForm):
@@ -289,11 +300,22 @@ class CcronogramaForm(forms.ModelForm):
 class BitacoraForm(forms.ModelForm):
     class Meta:
         model = Bitacora
-        fields = ['semana' , 'fecha', 'Tema', 'material']
+        fields = ['semana','fecha','Tema', 'material']
         widgets = {
             'semana': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': '#Semana'}),
             'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local','class': 'datepicker','id': "date"}),
             'Tema': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'tema'}),
             'material': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'material'}),
         }
+
+class BitacoraEditForm(forms.ModelForm):
+    class Meta:
+        model = Bitacora
+        fields = ['Tema', 'material']
+        widgets = {
+            'semana': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': '#Semana'}),
+            'fecha': forms.DateTimeInput(attrs={'type': 'datetime-local','class': 'datepicker','id': "date"}),
+            'Tema': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'tema'}),
+            'material': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'material'}),
+        }        
        

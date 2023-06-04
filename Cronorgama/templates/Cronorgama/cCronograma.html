@@ -117,24 +117,24 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <div class="card">
-                                <div class="card-body">
+                                <div class="card-body bg-secondary text-white">
                                     <div class="container">
                                         <div class="row">
-                                            
+
                                             <div class="col-md-5">
-                                                <h3>{{ cronograma.programa.nombre }}</h3>
+                                                <h3>{{ cronograma.programa.nombre|upper }}</h3>
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="">Codigo: {{ cronograma.programa.codigo }}</label>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            
+
                                             <div class="col-md-5">
-                                                <label for="">Asignatura: {{ cronograma.Asignatura.nombre }}</label>
+                                                <label for="">Asignatura: {{ cronograma.asignatura.nombre }}</label>
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="">Codigo: {{ cronograma.Asignatura.codigo }}</label>
+                                                <label for="">Codigo: {{ cronograma.asignatura.codigo }}</label>
 
                                             </div>
                                         </div>
@@ -143,7 +143,7 @@
                                                 <label for="">Profesor: {{ cronograma.Profesor}}</label>
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="">email: {{ cronograma.Profesor.email}}</label>
+                                                <label for="">Correo: {{ cronograma.Profesor.email}}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -160,6 +160,7 @@
                                                     <th>Fecha</th>
                                                     <th>Tema</th>
                                                     <th>Material</th>
+                                                    <th>accion</th>
                                                 </tr>
                                             </thead>
                                             <tfoot>
@@ -168,7 +169,7 @@
                                                     <th>Fecha</th>
                                                     <th>Tema</th>
                                                     <th>Material</th>
-
+                                                    <th>accion</th>
 
                                                 </tr>
                                             </tfoot>
@@ -179,12 +180,22 @@
                                                     <td>{{ bitacora.fecha}}</td>
                                                     <td>{{ bitacora.Tema}} </td>
                                                     <td>{{ bitacora.material}} </td>
+                                                    <td>
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="abrir_modal_modificarcro('{% url 'modificarcro' id_bitacora=bitacora.id_bitacora %}')">
+                                                            Modificar</button>
+                                                    </td>
                                                 </tr>
 
                                                 {% endfor %}
 
                                             </tbody>
+                                            
                                         </table>
+                                        <form action="{% url 'generar_cronograma' id=cronograma.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Generar reporte</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +207,7 @@
                         <a class="scroll-to-top rounded" href="#page-top">
                             <i class="fas fa-angle-up"></i>
                         </a>
-                        <div class="modal fade" id="editarProy" role="dialog">
+                        <div class="modal fade" id="modificarcro" role="dialog">
 
                         </div>
 
@@ -236,6 +247,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
             integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript">
+            var $ = jQuery.noConflict();
+            function abrir_modal_modificarcro(url) {
+                $('#modificarcro').load(url, function () {
+                    $(this).modal('show');
+                });
+            }
+        </script>
         {% if error_message %}
         <script>
             $(document).ready(function () {

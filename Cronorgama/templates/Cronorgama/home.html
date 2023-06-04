@@ -14,6 +14,12 @@
     <title>Univalle</title>
 
     <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
+        integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'css/sb-admin-2.css' %}">
     <link rel="stylesheet" href="{% static 'css/sb-admin-2.min.css' %}">
 
@@ -90,6 +96,10 @@
                         <a class="collapse-item" href="{% url 'cronograma' %}">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Cronograma</span></a>
+                            <a class="collapse-item" href="{% url 'diligenciado' %}">
+                                <i class="fas fa-fw fa-table"></i>
+                                <span>Diligenciado</span>
+                            </a>
                     </div>
                 </div>
             </li>
@@ -145,7 +155,7 @@
                         <h6 class="collapse-header">Other Pages:</h6>
                         <a class="collapse-item" href="blank.html">Blank Page</a>
                         <a class="collapse-item" href="{% url 'rango' %}">Calendario</a>
-                        <a class="collapse-item" href="{% url 'programacion' %}">Programacion</a>
+                        <a class="collapse-item" href="{% url 'Itinerario' %}">Itinerario</a>
                     </div>
                 </div>
             </li>

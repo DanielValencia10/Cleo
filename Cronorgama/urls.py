@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,programacion,Cdiaedit,cronograma,CcronogramaU#,cCalendario
+from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,Cdiaedit,cronograma,CcronogramaU,Itinerario,CprogramacionU,activardis,desactivardis,obtener_opciones_filtradas,modificarcro,desactivarcro,activarcro,generar_cronograma,diligenciado#,cCalendario,programacion,
 
 urlpatterns = [
     path('', home, name='home'),
@@ -50,8 +50,17 @@ urlpatterns = [
     path('rango/', rango, name='rango'),
     path('rango/modificar/<int:id>/', modificarango, name='modificarango'),
     path('salon/', salon, name='salon'),
-    path('programacion/', programacion, name='programacion'),
+    #path('programacion/', programacion, name='programacion'),
     path('cronograma/', cronograma, name='cronograma'),
-    path('proyeccion/CcronogramaU/<int:id>/', CcronogramaU, name='CcronogramaU'),
-    
+    path('cronograma/CcronogramaU/<int:id>/', CcronogramaU, name='CcronogramaU'),
+    path('Itinerario/', Itinerario, name='Itinerario'),
+    path('Itinerario/CprogramacionU/<int:id>/', CprogramacionU, name='CprogramacionU'),
+    path('desactivardis/<int:cdia_id>/', desactivardis, name='desactivardis'),
+    path('activardis/<int:cdia_id>/', activardis, name='activardis'),
+    path('ruta-hacia-vista/', obtener_opciones_filtradas, name='obtener_opciones_filtradas'),
+    path('cronograma/bitacora/<int:id_bitacora>/', modificarcro, name='modificarcro'),
+    path('desactivarcor/<int:cdia_id>/', desactivarcro, name='desactivarcro'),
+    path('activarcor/<int:cdia_id>/', activarcro, name='activarcro'),
+    path('cronograma/<int:id>/generar_cronograma/', generar_cronograma, name='generar_cronograma'),
+    path('diligenciado/', diligenciado, name='diligenciado'),
 ]

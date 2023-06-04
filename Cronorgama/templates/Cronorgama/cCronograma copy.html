@@ -6,6 +6,7 @@
 
 <head>
     <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
+
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
         integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
@@ -38,7 +39,9 @@
 
                                     <div class="p-3">
 
-                                        <form class="user" action="{% url 'cronograma' %}" method="POST">
+                                        <form class="user" action="{% url 'CprogramacionU' itinerarioU.id %}"
+                                            method="POST">
+
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -76,15 +79,23 @@
                                             <br><br>
                                             <div class="form-group row">
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.programa }}
+                                                    {{ form.semana }}
+                                                </div>
 
-                                                </div>
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.Profesor }}
+                                                    {{ form.fecha }}
                                                 </div>
+
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.asignatura }}
+                                                    {{ form.Tema }}
                                                 </div>
+
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+                                                    {{ form.material }}
+                                                </div>
+
+                                            </div>
+
                                         </form>
                                         <hr>
                                     </div>
@@ -92,50 +103,81 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- DataTales Example -->
-                    <div class="album py-0 bg-light">
-                        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
-                            {% for cronograma in cronogramas %}
-                            <div class="col">
-                                <div class="card shadow-sm border-bottom-danger ">
-                                    <div class="card-header bg-gradient-danger text-gray-100" style="height: 10rem;">
-                                        <h5 class="card-title">{{ cronograma.programa.nombre|upper }} / {{ cronograma.programa.codigo }}</h5><br><br>
-                                        <h6 class="card-subtitle mb-2 ">Asignatura: {{ cronograma.asignatura.nombre }}
-                                        </h6>
-                                        <p class="card-text">Profesor: {{ cronograma.Profesor }}</p>
-                                    </div>
-
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button"
-                                                    onclick="window.location.href='{% url 'CcronogramaU' cronograma.id %}'"
-                                                    class="btn btn-sm btn-outline-secondary" {% if cronograma.activo %}{% else %}disabled{% endif %}>Visualizar</button>
+                    <!--aqui-->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <div class="card">
+                                <div class="card-body bg-secondary text-white">
+                                    <div class="container">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-5">
+                                                <h3>{{ cronograma.programa.nombre|upper }}</h3>
                                             </div>
+                                            <div class="col-md-3">
+                                                <label for="">Codigo: {{ cronograma.programa.codigo }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            
+                                            <div class="col-md-5">
+                                                <label for="">Asignatura: {{ cronograma.asignatura.nombre }}</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="">Codigo: {{ cronograma.asignatura.codigo }}</label>
 
-                                            {% if cronograma.activo %}
-                                            <form action="{% url 'desactivarcro' cronograma.id %}" method="post">
-                                                {% csrf_token %}
-                                                <button class="btn btn-outline-secondary btn-sm" type="submit"
-                                                    class="btn btn-danger">x
-                                                </button>
-                                            </form>
-                                            {% else %}
-                                            <form action="{% url 'activarcro' cronograma.id %}" method="post">
-                                                {% csrf_token %}
-                                                <button class="btn btn-outline-success btn-sm" type="submit"
-                                                    class="btn btn-success">✓</button>
-                                            </form>
-                                            {% endif %}
-
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label for="">Profesor: {{ cronograma.Profesor}}</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="">Correo: {{ cronograma.Profesor.email}}</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {% endfor %}
-                            <br>
+                            <!-- DataTales Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Semana</th>
+                                                    <th>Fecha</th>
+                                                    <th>Tema</th>
+                                                    <th>Material</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Semana</th>
+                                                    <th>Fecha</th>
+                                                    <th>Tema</th>
+                                                    <th>Material</th>
+
+
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for bitacora in bitacoras.all %}
+                                                <tr>
+                                                    <td>{{ bitacora.semana }}</td>
+                                                    <td>{{ bitacora.fecha}}</td>
+                                                    <td>{{ bitacora.Tema}} </td>
+                                                    <td>{{ bitacora.material}} </td>
+                                                </tr>
+
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- End of Page Wrapper -->
@@ -191,14 +233,9 @@
             });
         </script>
         {% endif %}
-        <script type="text/javascript">
-            var $ = jQuery.noConflict();
-            function abrir_modal_editarProy(url) {
-                $('#editarProy').load(url, function () {
-                    $(this).modal('show');
-                });
-            }
-        </script>
+    </div>
+    </div>
+    </div>
 </body>
 
 </html>

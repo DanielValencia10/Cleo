@@ -27,7 +27,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Cronograma</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Programacion</h1>
                     <div class="container-fluid p-0">
 
                         <div class="card o-hidden border-0 shadow-lg my-4">
@@ -38,7 +38,7 @@
 
                                     <div class="p-3">
 
-                                        <form class="user" action="{% url 'cronograma' %}" method="POST">
+                                        <form class="user" action="{% url 'Itinerario' %}" method="POST">
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -77,13 +77,6 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
                                                     {{ form.programa }}
-
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.Profesor }}
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.asignatura }}
                                                 </div>
                                         </form>
                                         <hr>
@@ -97,11 +90,11 @@
                     <!-- DataTales Example -->
                     <div class="album py-0 bg-light">
                         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
-                            {% for cronograma in cronogramas %}
+                            {% for itinerario in itinerarios %}
                             <div class="col">
                                 <div class="card shadow-sm border-bottom-danger ">
                                     <div class="card-header bg-gradient-danger text-gray-100" style="height: 10rem;">
-                                        <h5 class="card-title">{{ cronograma.programa.nombre|upper }} / {{ cronograma.programa.codigo }}</h5><br><br>
+                                        <h5 class="card-title">{{ itinerario.programa.nombre|upper }} / {{ itinerario.programa.codigo }}</h5><br><br>
                                         <h6 class="card-subtitle mb-2 ">Asignatura: {{ cronograma.asignatura.nombre }}
                                         </h6>
                                         <p class="card-text">Profesor: {{ cronograma.Profesor }}</p>
@@ -111,24 +104,16 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="btn-group">
                                                 <button type="button"
-                                                    onclick="window.location.href='{% url 'CcronogramaU' cronograma.id %}'"
-                                                    class="btn btn-sm btn-outline-secondary" {% if cronograma.activo %}{% else %}disabled{% endif %}>Visualizar</button>
+                                                    onclick="window.location.href='{% url 'CprogramacionU' itinerario.id %}'"
+                                                    class="btn btn-sm btn-outline-secondary">Visualizar</button>
                                             </div>
 
-                                            {% if cronograma.activo %}
-                                            <form action="{% url 'desactivarcro' cronograma.id %}" method="post">
-                                                {% csrf_token %}
-                                                <button class="btn btn-outline-secondary btn-sm" type="submit"
-                                                    class="btn btn-danger">x
-                                                </button>
-                                            </form>
-                                            {% else %}
-                                            <form action="{% url 'activarcro' cronograma.id %}" method="post">
-                                                {% csrf_token %}
-                                                <button class="btn btn-outline-success btn-sm" type="submit"
-                                                    class="btn btn-success">✓</button>
-                                            </form>
-                                            {% endif %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" {% if proyeccion.activo %}checked{% endif %}>
+                                                <label class="form-check-label">
+                                                    Activo:
+                                                </label>
+                                            </div>
 
                                         </div>
                                     </div>
