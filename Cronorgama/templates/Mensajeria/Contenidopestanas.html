@@ -1,0 +1,111 @@
+{% load static %}
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+        aria-labelledby="home-tab" tabindex="0">
+        <div class="col-lg-0">
+            <div class="p-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="destinatario">Destinatario:</label>
+                        <select class="form-control" id="destinatario"
+                            name="destinatario">
+                            {% for usuario in usuarios %}
+                            <option value="{{ usuario.username }}">{{ usuario.username}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="proyeccion">Proyección:</label>
+                        <select class="form-control" id="proyeccion" name="proyeccion">
+                            {% for proyeccion in proyecciones %}
+                            <option value="{{ proyeccion.id }}">{{ proyeccion }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje:</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje"
+                            rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Enviar tarea</button>
+                </form>
+                <!-- End of Page Wrapper -->
+                <h1>Select Dependiente</h1>
+                <label for="select1">¿Que tarea quieres Solicitar?:</label>
+                <select id="select1" class="form-control">
+                    <option value="Proyeccion">Proyeccion</option>
+                    <option value="Disponibilidad">Disponibilidad</option>
+                </select>
+
+                <label for="select2">Opciones:</label>
+                <select id="select2" class="form-control">
+                    <!-- Las opciones se actualizarán dinámicamente -->
+                </select>
+            </div>
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+        aria-labelledby="profile-tab" tabindex="0">
+        <div class="col-lg-0">
+
+            <div class="p-3">
+                <form method="post" action="{% url 'enviar_disponibilidad' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="destinatario">Destinatario:</label>
+                        <select class="form-control" id="destinatario"
+                            name="destinatario">
+                            {% for usuario in usuarios %}
+                            <option value="{{ usuario.username }}">{{ usuario.username }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="disponibilidad">Disponibilidad:</label>
+                        <select class="form-control" id="disponibilidad"
+                            name="disponibilidad">
+                            {% for disponibilidad in disponibilidades %}
+                            <option value="{{ disponibilidad.id }}">{{ disponibilidad }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje:</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje"
+                            rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Enviar
+                        Disponibilidad</button>
+                </form>
+                <!-- End of Page Wrapper -->
+                <h1>Select Dependiente</h1>
+                <label for="select1">Categoría:</label>
+                <select id="select1">
+                    <option value="Frutas">Frutas</option>
+                    <option value="Verduras">Verduras</option>
+                </select>
+
+                <label for="select2">Opciones:</label>
+                <select id="select2">
+                    <!-- Las opciones se actualizarán dinámicamente -->
+                </select>
+
+            </div>
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
+        aria-labelledby="contact-tab" tabindex="0">...</div>
+</div>

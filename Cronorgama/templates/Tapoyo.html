@@ -2,18 +2,9 @@
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Cronograma</title>
-
     <!-- Custom styles for this page -->
     <link rel="stylesheet" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
 
@@ -50,7 +41,7 @@
 
                                     <div class="p-3">
 
-                                        <form action="{% url 'table' %}" method="POST">
+                                        <form action="{% url 'crear_tapoyo_programa' %}" method="POST">
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -84,47 +75,18 @@
                                                         <path
                                                             d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
                                                     </svg>Eliminar</button>
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="abrir_modal_importar('{% url 'load_users' %}')"><svg
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-box-arrow-up"
-                                                        viewBox="0 0 16 16">
-                                                        <path fill-rule="evenodd"
-                                                            d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
-                                                        <path fill-rule="evenodd"
-                                                            d="M7.646.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 1.707V10.5a.5.5 0 0 1-1 0V1.707L5.354 3.854a.5.5 0 1 1-.708-.708l3-3z" />
-                                                    </svg>Importar</button>
                                             </div>
                                             <br><br>
                                             <div class="form-group row">
                                                 <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    {{ form.username }}
+                                                    {{ form.Tapoyo }}
                                                 </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-3">
 
-                                                    {{ form.first_name }}
-                                                </div>
                                                 <div class="col-sm-3">
 
-                                                    {{ form.last_name }}
-                                                </div>
-                                                <div class="col-sm-3 mb-3 mb-sm-3">
-                                                    <input type="password" class="form-control form-control-sm"
-                                                    name="password1" placeholder="Contraseña" id="id_password1">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    {{ form.groups }}
+                                                    {{ form.programa }}
                                                 </div>
 
-                                                <div class="col-sm-6">
-
-                                                    {{ form.email }}
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <input type="password" class="form-control form-control-sm"
-                                                        name="password2" placeholder="Repita la contraseña" id="id_password2">
-
-                                                </div>
                                             </div>
                                         </form>
                                         <hr>
@@ -147,66 +109,29 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
-                                            <th>Habilitado</th>
-                                            <th>Accion</th>
+                                            <th>Tecnico de apoyo</th>
+                                            <th>Programa</th>
+
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>#</th>
-                                            <th>Nombre Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                            <th>Correo</th>
-                                            <th>Habilitado</th>
-                                            <th>Accion</th>
+                                            <th>Tecnico de apoyo</th>
+                                            <th>Programa</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for User in C_users %}
+
+                                        {% for registro in Tapoyo %}
                                         <tr>
                                             <td>{{forloop.counter}}</td>
-                                            <td>{{User.username}}</td>
-                                            <td>{% if User.groups.exists %}
-                                                {% for group in User.groups.all %}
-                                                <span class="badge badge-info">{{ group.name }}</span>
-                                                {% endfor %}
-                                                {% else %}
-                                                sin Rol
-                                                {% endif %}
-                                            </td>
-                                            <td>{{User.first_name}}</td>
-                                            <td>{{User.last_name}}</td>
-                                            <td>{{User.email}}</td>
-                                            <td>
-
-                                                {% if User.is_active %}
-
-                                                Si
-
-                                                {% else%}
-
-                                                No
-
-                                                {% endif %}
-                                            </td>
-                                            <td><a class="btn btn-warning  btn-sm"
-                                                    href="{% url 'desactivar' User.id %}"><svg
-                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                        <path
-                                                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                                    </svg></a></td>
+                                            <td>{{ registro.Tapoyo }}</td>
+                                            <td>{{ registro.programa }}</td>
                                         </tr>
+
                                         {% endfor %}
+                                        
                                     </tbody>
                                 </table>
                             </div>
@@ -229,9 +154,6 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    <div class="modal fade" id="importar" role="dialog">
-
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -241,36 +163,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
         integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script type="text/javascript">
-        var $ = jQuery.noConflict();
-        function abrir_modal_importar(url) {
-            $('#importar').load(url, function () {
-                $(this).modal('show');
-            });
-        }
-    </script>
-    <script>
-        var passwordInput = document.getElementById('id_password1');
-        var confirmPasswordInput = document.getElementById('id_password2');
-        var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\s\d\w]).{8,}$/;
-
-        passwordInput.addEventListener('input', function () {
-            if (!regex.test(passwordInput.value)) {
-                passwordInput.setCustomValidity('La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial (excluyendo el espacio)');
-            } else {
-                passwordInput.setCustomValidity('');
-            }
-        });
-        // Validar la confirmación de contraseña ingresada en el campo password2
-        confirmPasswordInput.addEventListener('input', function () {
-            if (confirmPasswordInput.value !== passwordInput.value) {
-                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
-            } else {
-                confirmPasswordInput.setCustomValidity('');
-            }
-        });
-    </script>
 </body>
 
 </html>

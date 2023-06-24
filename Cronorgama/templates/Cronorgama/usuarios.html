@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <!-- Custom styles for this page -->
@@ -12,6 +12,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
         integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <body id="page-top">
@@ -29,7 +30,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Programacion</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Usuarios</h1>
                     <div class="container-fluid p-0">
 
                         <div class="card o-hidden border-0 shadow-lg my-4">
@@ -40,7 +41,7 @@
 
                                     <div class="p-3">
 
-                                        <form action="{% url 'CprogramacionU' itinerarioU.id %}" method="POST">
+                                        <form action="{% url 'usuarios' %}" method="POST">
                                             {% csrf_token %}
                                             <div class="btn-group p-1" role="group"
                                                 aria-label="Basic mixed styles example">
@@ -74,7 +75,8 @@
                                                         <path
                                                             d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
                                                     </svg>Eliminar</button>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick=""><svg
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="abrir_modal_importar('{% url 'load_users' %}')"><svg
                                                         xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-box-arrow-up"
                                                         viewBox="0 0 16 16">
@@ -86,50 +88,38 @@
                                             </div>
                                             <br><br>
                                             <div class="form-group row">
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
-                                                    {{ form.id_asignaturas }}
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+                                                    {{ form.username }}
+                                                </div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+                                                    {{ form.cedula }}
+                                                </div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+
+                                                    {{ form.first_name }}
+                                                </div>
+                                                <div class="col-sm-3">
+
+                                                    {{ form.last_name }}
+                                                </div>
+                                                <div class="col-sm-3 mb-3 mb-sm-3">
+                                                    <input type="password" class="form-control form-control-sm"
+                                                    name="password1" placeholder="Contraseña" id="id_password1">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <input type="password" class="form-control form-control-sm"
+                                                        name="password2" placeholder="Repita la contraseña" id="id_password2">
+
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    {{ form.groups }}
                                                 </div>
 
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
+                                                <div class="col-sm-6">
 
-                                                    {{ form.id_authuser }}
+                                                    {{ form.email }}
                                                 </div>
-
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
-
-                                                    {{ form.hora }}
-                                                </div>
-                                                <div class="col-sm-1 mb-2 mb-sm-3">
-                                                    {{ form.grupo }}
-                                                </div>
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
-                                                    <div class="form-check">{{ form.Rsala }} <label
-                                                            class="form-check-label" for="flexCheckDefault">¿Requiere
-                                                            sala de sistemas?</label></div>
-                                                </div>
-                                                <div class="col-sm-1 mb-2 mb-sm-3">
-                                                    {{ form.id_salon }}
-                                                </div>
-                                                <div class="col-sm-1 mb-2 mb-sm-3">
-                                                    {{ form.Cupo }}
-                                                </div>
-                                                <div class="col-sm-2 mb-2 mb-sm-3">
-                                                    {{ form.CupoG }}
-                                                </div>
-                                                <div class="col-sm-2 mb-2 mb-sm-3">
-                                                    {{ form.CupoPostM }}
-                                                </div>
-                                                <div class="col-sm-2 mb-2 mb-sm-3">
-                                                    {{ form.bdcontratista }}
-                                                </div>
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
-                                                    {{ form.observacion }}
-                                                </div>
-                                                <div class="col-sm-3 mb-2 mb-sm-3">
-                                                    <select name="select" id="select2">
-
-                                                    </select>
-                                                </div>
+                                                
                                             </div>
                                         </form>
                                         <hr>
@@ -143,88 +133,58 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-danger">Programaciones Registradas</h6>
+                            <h6 class="m-0 font-weight-bold text-danger">Usuarios Registrados</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-sm text-xs" id="dataTable" width="100%"
+                                <table class="table table-bordered table-sm" id="dataTable" width="100%"
                                     cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Codigo Asig.</th>
-                                            <th>AsIgnatura</th>
-                                            <th>Cred.</th>
-                                            <th>Grupo</th>
-                                            <th>Codigo-Grupo.</th>
-                                            <th>Cupo</th>
-                                            <th>Cupo Generico Adicional al cupo asignado</th>
-                                            <th>Ajuste de cupos posmatricula</th>
-                                            <th>Cc.</th>
-                                            <th>Docente</th>
-                                            <th>Correo Electronico</th>
-                                            <th>Dia</th>
-                                            <th>Horario</th>
-                                            <th>"Intensidad
-                                                semanal
-                                                (SIRA)"</th>
-                                            <th>La clase requiere sala de sistemas</th>
-                                            <th>Salon</th>
-                                            <th>Observaciones</th>
-                                            <th>Banco de
-                                                Datos de Profesores Contratistas Elegibles</th>
-                                            <th>Salones</th>
-                                            <th>Capacidad espacios</th>
+                                            <th>Nombre Usuario</th>
+                                            <th>Cedula</th>
+                                            <th>Rol</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Correo</th>
+                                            <th>Habilitado</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>#</th>
-                                            <th>Codigo Asig.</th>
-                                            <th>AsIgnatura</th>
-                                            <th>Cred.</th>
-                                            <th>Grupo</th>
-                                            <th>Codigo-Grupo.</th>
-                                            <th>Cupo</th>
-                                            <th>Cupo Generico Adicional al cupo asignado</th>
-                                            <th>Ajuste de cupos posmatricula</th>
-                                            <th>Cc.</th>
-                                            <th>Docente</th>
-                                            <th>Correo Electronico</th>
-                                            <th>Dia</th>
-                                            <th>Horario</th>
-                                            <th>"Intensidad
-                                                semanal
-                                                (SIRA)"</th>
-                                            <th>La clase requiere sala de sistemas</th>
-                                            <th>Salon</th>
-                                            <th>Observaciones</th>
-                                            <th>Banco de
-                                                Datos de Profesores Contratistas Elegibles</th>
-                                            <th>Salones</th>
-                                            <th>Capacidad espacios</th>
+                                            <th>Nombre Usuario</th>
+                                            <th>Cedula</th>
+                                            <th>Rol</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Correo</th>
+                                            <th>Habilitado</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for Programacion in programacion.all %}
+                                        {% for User in C_users %}
                                         <tr>
                                             <td>{{forloop.counter}}</td>
-                                            <td>{{Programacion.id_asignaturas.codigo}}</td>
-                                            <td>{{Programacion.id_asignaturas.nombre}}</td>
-                                            <td>{{Programacion.id_asignaturas.creditos}}</td>
-                                            <td>{{Programacion.grupo.nombre}}</td>
-                                            <td>{{Programacion.id_asignaturas.codigo}}-{{Programacion.grupo.nombre}}
+                                            <td>{{User.username}}</td>
+                                            <td>{{User.cedula}}</td>
+                                            <td>{% if User.groups.exists %}
+                                                {% for group in User.groups.all %}
+                                                <span class="badge badge-info">{{ group.name }}</span>
+                                                {% endfor %}
+                                                {% else %}
+                                                sin Rol
+                                                {% endif %}
                                             </td>
-                                            <td>{{Programacion.Cupo}}</td>
-                                            <td>{{Programacion.CupoG}}</td>
-                                            <td>{{Programacion.CupoPostM}}</td>
-                                            <td>{{Programacion.id_authuser.cedula}}</td>
-                                            <td>{{Programacion.id_authuser.first_name}}</td>
-                                            <td>{{Programacion.id_authuser.email}}</td>
-                                            <td>{{Programacion.grupo.nombre}}</td>
-                                            <td>{{Programacion.grupo.nombre}}</td>
-                                            <td>{{Programacion.id_asignaturas.intensidad}}</td>
-                                            <td> {% if Programacion.Rsala %}
+                                            <td>{{User.first_name}}</td>
+                                            <td>{{User.last_name}}</td>
+                                            <td>{{User.email}}</td>
+                                            <td>
+
+                                                {% if User.is_active %}
 
                                                 Si
 
@@ -232,12 +192,17 @@
 
                                                 No
 
-                                                {% endif %}</td>
-                                            <td>{{Programacion.id_salon.nombre}}</td>
-                                            <td>{{Programacion.observacion}}</td>
-                                            <td>{{Programacion.bdcontratista}}</td>
-                                            <td>{{Programacion.id_salon.tipo}}</td>
-                                            <td>{{Programacion.id_salon.capacidad}}</td>
+                                                {% endif %}
+                                            </td>
+                                            <td><a class="btn btn-warning  btn-sm"
+                                                    href="{% url 'desactivar' User.id %}"><svg
+                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                        <path
+                                                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                    </svg></a></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -283,28 +248,27 @@
             });
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $.ajax({
-            url: '/ruta-hacia-vista/',
-            data: { 'valor': valorSeleccionado },
-            dataType: 'json',
-            success: function (data) {
-                // Obtener las opciones devueltas por la vista
-                var opciones = data.opciones_html;
+        var passwordInput = document.getElementById('id_password1');
+        var confirmPasswordInput = document.getElementById('id_password2');
+        var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\s\d\w]).{8,}$/;
 
-                // Actualizar el contenido del select2
-                $('#id_select2').html(opciones);
-
-                // Actualizar el select2
-                $('#id_select2').trigger('change');
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log('Error:', errorThrown);
+        passwordInput.addEventListener('input', function () {
+            if (!regex.test(passwordInput.value)) {
+                passwordInput.setCustomValidity('La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un caracter especial (excluyendo el espacio)');
+            } else {
+                passwordInput.setCustomValidity('');
+            }
+        });
+        // Validar la confirmación de contraseña ingresada en el campo password2
+        confirmPasswordInput.addEventListener('input', function () {
+            if (confirmPasswordInput.value !== passwordInput.value) {
+                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
             }
         });
     </script>
-
 </body>
 
 </html>

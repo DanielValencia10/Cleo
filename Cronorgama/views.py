@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CproyeccionForm, CasignaturaForm, DisponibilidadForm, CdiaForm, AsignaturaXProfesorForm, CalendarioForm, CasigXprofeForm, RangoForm,SalonForm,ProgramacionForm,CronogramaForm,CcronogramaForm,BitacoraForm,itinerarioForm,BitacoraEditForm
-from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Casignatura, Disponibilidad, Cdisponibilidad, Cdia, Ccalendario, calendario, Rango, asignaturaXprofesor, casigXprofe, MensajesDisponibilidad,Salon,Ccronograma,Cronograma,RegistroAsistencia,itinerario,Cprogramacion,Programacion,Bitacora
+from .forms import CustomUserCreationForm, UserEditForm, AsignaturaForm, ProgramaForm, ProyeccionForm, CasignaturaForm, DisponibilidadForm, HorarioDiaForm,RangoForm,SalonForm,ProgramacionForm,CronogramaForm,BitacoraForm,itinerarioForm,BitacoraEditForm, TapoyoxProgramaForm
+from .models import User, Asignaturas, Programas, Proyeccion, TipoJornada, Cproyeccion, Mensajes, Disponibilidad, HorarioProfesor, HorarioDia, Rango,MensajesDisponibilidad,Salon,Ccronograma,Cronograma,RegistroAsistencia,itinerario,Cprogramacion,Programacion,Bitacora, Tapoyoxprograma
 from django.contrib.auth.models import Group
 import openpyxl
 from reportlab.lib.pagesizes import letter, inch
@@ -50,11 +49,11 @@ def desactivar(request, user_id):
     else:
         user.is_active = True
     user.save()
-    return redirect('table')
+    return redirect('usuarios')
 
 
 @login_required
-def table(request):
+def usuarios(request):
     C_users = User.objects.all()
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -65,10 +64,10 @@ def table(request):
 
             for group in groups:
                 group.user_set.add(user)
-            return redirect('table')
+            return redirect('usuarios')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'Cronorgama/tables.html', {'form': form, 'C_users': C_users})
+    return render(request, 'Cronorgama/usuarios.html', {'form': form, 'C_users': C_users})
 
 
 @login_required
@@ -113,7 +112,7 @@ def load_users(request):
             # Agregar al usuario al grupo
             user.groups.add(group)
             # Redirigir a una página de éxito después de guardar los datos
-        return render(request, 'Cronorgama/tables.html', {'C_users': C_users, 'groups': groups})
+        return render(request, 'Cronorgama/usuarios.html', {'C_users': C_users, 'groups': groups})
     else:
         # Renderizar el formulario para cargar el archivo si el método no es POST
         return render(request, 'Cronorgama/load_users.html', {'C_users': C_users, 'groups': groups})
@@ -324,7 +323,7 @@ def modificarusu(request, id):
 
 
 @login_required
-def enviar_tarea(request):
+def asignarActividad(request):
     if request.method == 'POST':
         destinatario = request.POST.get('destinatario')
         proyeccion_id = request.POST.get('proyeccion')
@@ -337,7 +336,7 @@ def enviar_tarea(request):
             destinatario = User.objects.get(username=destinatario)
         except User.DoesNotExist:
             messages.error(request, 'El usuario destinatario no existe')
-            return redirect('enviar_tarea')
+            return redirect('asignarActividad')
 
         # Crear el mensaje
         mensaje = Mensajes.objects.create(
@@ -351,7 +350,7 @@ def enviar_tarea(request):
         mensaje.usuarios_destinatarios.add(destinatario)
 
         messages.success(request, 'Tarea enviada exitosamente')
-        return redirect('enviar_tarea')
+        return redirect('asignarActividad')
 
     else:
         usuarios = User.objects.exclude(username=request.user.username)
@@ -359,7 +358,7 @@ def enviar_tarea(request):
         disponibilidades = Disponibilidad.objects.all()
         proyecciones_json = json.dumps([str(p) for p in proyecciones])
         disponibilidades_json = json.dumps([str(d) for d in disponibilidades])
-        return render(request, 'enviar_tarea.html', {'usuarios': usuarios, 'proyecciones_json': proyecciones_json, 'proyecciones': proyecciones, 'disponibilidades_json': disponibilidades_json,'disponibilidades': disponibilidades})
+        return render(request, 'Mensajeria/asignarActividad.html', {'usuarios': usuarios, 'proyecciones_json': proyecciones_json, 'proyecciones': proyecciones, 'disponibilidades_json': disponibilidades_json,'disponibilidades': disponibilidades})
 
 
 @login_required
@@ -370,10 +369,7 @@ def enviar_disponibilidad(request):
         mensaje = request.POST.get('mensaje')
         confirmar = False
         usuario_emisor = request.user
-        print("destinatario: ",destinatario )
-        print("disponibilidad id: ",disponibilidad_id)
-        print("mendsaje: ",mensaje)
-        print("usuario emisoR:", usuario_emisor)
+       
         try:
             destinatario = User.objects.get(username=destinatario)
         except User.DoesNotExist:
@@ -421,13 +417,8 @@ def confirmar_disponibilidad_mensaje(request, mensaje_id):
 def mensajes_recibidos(request):
     mensajesP = Mensajes.objects.filter(usuarios_destinatarios=request.user)
     mensajesD = MensajesDisponibilidad.objects.filter(usuarios_destinatarios=request.user)
-    return render(request, 'mensajes_recibidos.html', {'mensajesP': mensajesP,'mensajesD': mensajesD})
+    return render(request, 'Mensajeria/mensajes_recibidos.html', {'mensajesP': mensajesP,'mensajesD': mensajesD})
 
-
-@login_required
-def mensajes_disponibilidad_recibidos(request):
-    mensajes = MensajesDisponibilidad.objects.filter(usuarios_destinatarios=request.user)
-    return render(request, 'mensajes_disponibilidad_recibidos.html', {'mensajes': mensajes})
 
 @login_required
 @group_required('Técnico de apoyo','Secretaria Academica','Profesor de apoyo','Profesor')
@@ -437,7 +428,7 @@ def disponibilidad(request):
         form = DisponibilidadForm(request.POST)
         if form.is_valid():
             try:
-                cdisponibilidad = Cdisponibilidad.objects.create()
+                cdisponibilidad = HorarioProfesor.objects.create()
                 cdisponibilidad.save()
 
                 disponibilidad = form.save(commit=False)
@@ -460,7 +451,7 @@ def CdisponibilidadU(request, id):
     cdias = disponibilidad.cdisponibilidad.cdia
     if rango and rango.fecha_inicio.date() <= today <= rango.fecha_limite.date():
         if request.method == 'POST':
-            form = CdiaForm(request.POST)
+            form = HorarioDiaForm(request.POST)
             if form.is_valid():
                 try:
                     cdia = form.save(commit=False)
@@ -471,7 +462,7 @@ def CdisponibilidadU(request, id):
                 except ValidationError as e:
                     form.add_error(None, e)
         else:
-            form = CdiaForm()
+            form = HorarioDiaForm()
         return render(request, 'Cronorgama/DisponibilidadXusuario.html', {'form': form, 'cdias': cdias})
     else:
         error_message = "No está habilitado el registro de la disponibilidad."
@@ -479,22 +470,32 @@ def CdisponibilidadU(request, id):
 
 @group_required('Profesor','Secretaria Academica','Profesor de apoyo')   
 def Cdiaedit(request, cdia_id):
+    
+    if not request.user.groups.filter(name__in=['Profesor', 'Secretaria Academica', 'Profesor de apoyo']).exists():
+        messages.error(request, 'No tienes acceso a esta página.')
+        return redirect('ruta_de_redireccionamiento')
 
     # Verifica si ya existe un objeto Cdia con el cdia_id especificado y que esté asociado a la Cdisponibilidad actual
-    cdia = get_object_or_404(Cdia, id=cdia_id)
+    cdia = get_object_or_404(HorarioDia, id=cdia_id)
 
     if request.method == 'POST':
         # Si se envió un formulario con datos POST, crea una instancia de CdiaForm con los datos recibidos
-        form = CdiaForm(request.POST, instance=cdia)
+        form = HorarioDiaForm(request.POST, instance=cdia)
         if form.is_valid():
             # Guarda los cambios en el objeto Cdia
             form.save()
             return redirect('disponibilidad')  # Reemplaza 'ruta_de_redireccionamiento' con la URL a la que deseas redireccionar después de la modificación
     else:
         # Si no se envió un formulario POST, muestra el formulario para editar el objeto Cdia
-        form = CdiaForm(instance=cdia)
+        form = HorarioDiaForm(instance=cdia)
 
-    return render(request, 'Cronorgama/modificarDisponibilidad.html', {'form': form,'cdia':cdia}) 
+        context = {
+        'form': form,
+        'cdia': cdia,
+        'error_message': 'No tienes acceso a esta página.'
+    }
+
+    return render(request, 'Cronorgama/modificarDisponibilidad.html', context) 
 
 
 def rango(request):
@@ -521,111 +522,6 @@ def modificarango(request, id):
         form = RangoForm(instance=rango)
         error_message = "Modificar Rango"
     return render(request, 'Cronorgama/Rango.html', {'form': form, 'rango': rango, 'error_message': error_message})
-
-
-@login_required
-def calendarioF(request):
-    calendarios = calendario.objects.all()
-    if request.method == 'POST':
-        form = CalendarioForm(request.POST)
-        if form.is_valid():
-            try:
-
-                ccalendario = Ccalendario.objects.create()
-                ccalendario.save()
-
-                calendario1 = form.save(commit=False)
-                calendario1.cCalendario = ccalendario
-                calendario1.save()
-
-                return redirect('calendario')
-            except ValueError as error:
-                return render(request, 'Cronorgama/Calendario.html', {'form': form, 'error_message': str(error)})
-    else:
-        form = CalendarioForm()
-    return render(request, 'Cronorgama/Calendario.html', {'form': form, 'calendarios': calendarios})
-
-
-def asignaturaxprofesor(request):
-    if request.method == 'POST':
-        form = AsignaturaXProfesorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('asignaturaxprofesor')
-    else:
-        form = AsignaturaXProfesorForm()
-    return render(request, 'Cronorgama/asignaturaxprofesor.html', {'form': form})
-
-
-# @login_required
-# def cCalendario(request, id):
-#     calendario1 = calendario.objects.get(id=id)
-#     asigXprofe = calendario1.cCalendario.asigXprofe
-#     cdisponibilidad= Cdisponibilidad.objects.all()
-#     usuarios= User.objects.all()
-
-
-#     if request.method == 'POST':
-#         form = CasigXprofeForm(request.POST)
-
-
-#         if form.is_valid():
-#             try:
-#                 profesor = form.cleaned_data['asigXprofe'].Profesor
-#                 print(profesor)
-#                 hora_inicio = form.cleaned_data['hora_inicioClase']
-#                 print(hora_inicio)
-#                 hora_fin = form.cleaned_data['hora_finClase']
-#                 print(hora_fin)
-#                 dia = form.cleaned_data['dia']
-#                 print(dia)
-#                 #disponibilidad_profesor = Cdisponibilidad.objects.filter(profesor=profesor, dia=form.cleaned_data['dia'])
-#                # disponibilidad_profesor = Cdisponibilidad.objects.filter(profesor=profesor,cdisponibilidad.cd dia=form.cleaned_data['dia'])
-#                 asigXprofe_obj = form.save(commit=False)
-#                 asigXprofe_obj.save()
-#                 ccalendario_obj = calendario1.cCalendario
-#                 ccalendario_obj.asigXprofe.add(asigXprofe_obj)
-#                 return redirect('cCalendario', id=id)
-#             except ValidationError as e:
-#                 form.add_error(None, e)
-#         else:
-#             print("no es valido")
-#     else:
-#         form = CasigXprofeForm()
-#     return render(request, 'Cronorgama/cCalendario.html', {'form': form, 'cdias': asigXprofe})
-
-# def cCalendario(request, id):
-#     ccalendario_obj = Ccalendario.objects.get(id=id)
-#     asignatura_profesores = asignaturaXprofesor.objects.filter(asignatura__cproyecciones__cCalendario=ccalendario_obj)
-
-#     for asignatura_profesor in asignatura_profesores:
-#         profesor = asignatura_profesor.Profesor
-#     # Realiza operaciones con el objeto profesor
-
-#     if request.method == 'POST':
-#         # Crear la matriz 5x6
-#         matriz = [[False] * 6 for _ in range(5)]
-
-#         # Obtener todas las asignaturas
-#         asignaturas = asignaturaXprofesor.objects.all()
-
-#         # Recorrer las asignaturas y asignarlas en la matriz
-#         for asignatura in asignaturas:
-#             disponibilidad = Disponibilidad.objects.filter(Profesor=profesor).first()
-
-#             for dia_idx, dia in enumerate(['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']):
-#                 if getattr(disponibilidad.cdia, dia):
-#                     for hora in range(asignatura.hora_inicioClase.hour, asignatura.hora_finClase.hour + 1):
-#                         matriz[hora - 1][dia_idx] = True
-
-#         # Imprimir la matriz
-#         for hora, fila in enumerate(matriz, start=1):
-#             for dia, ocupado in enumerate(fila):
-#                 print(f"Hora {hora}, Día {dia}: {'Ocupado' if ocupado else 'Disponible'}")
-
-#     else:
-#         form = CasigXprofeForm()
-#     return render(request, 'Cronorgama/cCalendario.html', {'form': form, 'cdias': asigXprofe})
 
 @login_required
 def salon(request):
@@ -657,7 +553,7 @@ def obtener_profesores():
     return profesores
 
 @login_required
-@group_required('Profesor','Secretaria Academica')
+@group_required('Técnico de apoyo','Secretaria Academica','Profesor')
 def CcronogramaU(request, id):
     cronograma = Cronograma.objects.get(id=id)
     bitacoras = cronograma.ccronograma.bitacora
@@ -685,7 +581,7 @@ def CcronogramaU(request, id):
 
 
 @login_required
-@group_required('Profesor','Secretaria Academica')
+@group_required('Técnico de apoyo','Secretaria Academica','Profesor')
 def cronograma(request):
     profesores = User.objects.all()
     programas = Programas.objects.all()
@@ -784,7 +680,7 @@ def CprogramacionU(request, id):
 @group_required('Secretaria Academica')
 def desactivardis(request, cdia_id):
     
-    disponibilidad = Cdia.objects.get(id=cdia_id)
+    disponibilidad = HorarioDia.objects.get(id=cdia_id)
     disponibilidad.activo = False
     disponibilidad.save()
     return redirect('disponibilidad')
@@ -793,7 +689,7 @@ def desactivardis(request, cdia_id):
 @login_required
 @group_required('Secretaria Academica')
 def activardis(request, cdia_id):
-    disponibilidad = Cdia.objects.get(id=cdia_id)
+    disponibilidad = HorarioDia.objects.get(id=cdia_id)
     disponibilidad.activo = True
     disponibilidad.save()
     return redirect('disponibilidad')
@@ -846,8 +742,8 @@ def activarcro(request, cdia_id):
     return redirect('cronograma')
 
 
-
 @login_required
+@group_required('Técnico de apoyo','Secretaria Academica','Profesor de apoyo','Profesor')
 def generar_cronograma(request, id):
     if request.method == 'POST':
         cronograma = Cronograma.objects.get(pk=id)
@@ -934,27 +830,48 @@ def generar_cronograma(request, id):
     else:
         return render(request, 'Cronorgama/Cronograma.html')
 
+
 @login_required
+@group_required('Técnico de apoyo','Secretaria Academica','Profesor de apoyo','Profesor')
 def diligenciado(request):
-    
-    
-    
+    grupos_usuario = request.user.groups.all()
+    usuarioTa=Tapoyoxprograma.objects.filter(Tapoyo=request.user).first
     semanasContadas = []
     usuariosobtenidos = []
+    Ccronograma=[]
 
     usuarios = obtener_profesores().annotate(total_bitacoras=Count('cronograma__ccronograma__bitacora'))
 
     for usuario in usuarios:
+        cronograma = Cronograma.objects.filter(Profesor=usuario).first() 
         conteo = usuario.total_bitacoras if usuario.total_bitacoras else 0
         semanasContadas.append(conteo)
         usuariosobtenidos.append(usuario)
+        Ccronograma.append(cronograma)
+        
 
-    usuarios_con_semanas = zip(usuariosobtenidos, semanasContadas)
+    usuarios_con_semanas = zip(usuariosobtenidos, semanasContadas,Ccronograma)
 
     context = {
-        'usuarios_con_semanas': usuarios_con_semanas
+        'usuarios_con_semanas': usuarios_con_semanas,
+        'grupos': grupos_usuario,
+        'usuarioTa':usuarioTa
     }
 
     return render(request, 'Cronorgama/Diligenciado.html', context)
+
+
+def crear_tapoyo_programa(request):
+    Tapoyo= Tapoyoxprograma.objects.all()
+    
+    if request.method == 'POST':
+        form = TapoyoxProgramaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('crear_tapoyo_programa')  # Reemplaza 'ruta_de_redireccionamiento' con la URL a la que deseas redireccionar después de guardar el formulario
+    else:
+        form = TapoyoxProgramaForm()
+    
+    return render(request, 'Tapoyo.html', {'form': form,'Tapoyo':Tapoyo})
 
   

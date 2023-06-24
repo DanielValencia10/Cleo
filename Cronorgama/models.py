@@ -1,12 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import datetime, timedelta
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import Permission
 
 
 class User(AbstractUser):
     emailI = models.EmailField(null=True, blank=True)
+    cedula= models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.first_name
@@ -80,10 +78,6 @@ class Proyeccion(models.Model):
     def __str__(self):
         return f"Proyeccion de: {self.programas.nombre}"
 
-    # def save(self, *args, **kwargs):
-    #     if self.programas != self.Cproyeccion.self
-    #         raise ValueError("la proyeccion solo acepta asignaturas relacionadas con El tipo de proyeccion")
-    #     super().save(*args, **kwargs)
 
 class Mensajes(models.Model):
     id = models.AutoField(primary_key=True)
@@ -104,7 +98,7 @@ class Dia(models.Model):
     def __str__(self):
         return self.Nombre
 
-class Cdia(models.Model):
+class HorarioDia(models.Model):
     dia = models.ForeignKey(Dia, max_length=200, on_delete=models.CASCADE, default="", blank=True)
     a = models.BooleanField(default=0)
     b = models.BooleanField(default=0)
@@ -118,65 +112,18 @@ class Rango(models.Model):
     fecha_inicio = models.DateTimeField()
     fecha_limite = models.DateTimeField()
 
-class Cdisponibilidad(models.Model):
+class HorarioProfesor(models.Model):
     id = models.AutoField(primary_key=True)
-    cdia = models.ManyToManyField(
-        Cdia, related_name='cdia')
+    cdia = models.ManyToManyField(HorarioDia, related_name='cdia')
     
-    def save(self, *args, **kwargs):
-        # Realizar la validación antes de guardar los datos
-        if self.cdia.filter(dia=self.cdia.dia).exists():
-            raise ValidationError("Ya existe un cdia con el mismo día en esta Cdisponibilidad.")
-        
-        super().save(*args, **kwargs)
-    class Meta:
-            permissions = [
-            ('puede_ver_disponibilidad', 'Puede ver Disponibilidad'),
-            ('puede_editar_disponibilidad', 'Puede editar Disponibilidad'),
-            # Agrega más permisos según tus necesidades
-        ]    
 
 class Disponibilidad(models.Model):
     id = models.AutoField(primary_key=True)
     Profesor = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
-    cdisponibilidad = models.ForeignKey(Cdisponibilidad, on_delete=models.CASCADE, default=None, blank=True, related_name='disponibilidad')
+    cdisponibilidad = models.ForeignKey(HorarioProfesor, on_delete=models.CASCADE, default=None, blank=True,related_name='disponibilidad')
 
     def __str__(self):
         return f"Disponibilidad de: {self.Profesor}"
-
-class asignaturaXprofesor(models.Model):
-    id = models.AutoField(primary_key=True)
-    Profesor = models.ForeignKey(User, on_delete=models.CASCADE, default="", blank=True)
-    Asignatura= models.ForeignKey(Asignaturas, on_delete=models.CASCADE, default="", blank=True)
-
-class casigXprofe(models.Model):
-    id = models.AutoField(primary_key=True)
-    asigXprofe=models.ForeignKey(asignaturaXprofesor, on_delete=models.CASCADE, default="", blank=True)
-    dia = models.ForeignKey(Dia, max_length=200, on_delete=models.CASCADE, default="", blank=True)
-    hora_inicioClase = models.TimeField(verbose_name='Hora de inicio', blank=True)
-    hora_finClase = models.TimeField(verbose_name='Hora fin', blank=True)
-
-    def clean(self):
-        if self.hora_inicioClase and self.hora_finClase:
-            fecha_ficticia = datetime.now().date()
-            hora_inicio = datetime.combine(fecha_ficticia, self.hora_inicioClase)
-            hora_fin = datetime.combine(fecha_ficticia, self.hora_finClase)
-            duracion = hora_fin - hora_inicio
-
-            if duracion < timedelta(hours=2):
-                raise ValidationError('La duración de la clase debe ser de al menos 2 horas')
-            
-class Ccalendario(models.Model):
-    id=models.AutoField(primary_key=True)
-    asigXprofe= models.ManyToManyField(casigXprofe, related_name='casigXprofe')
-
-class calendario(models.Model):
-     Programa= models.ForeignKey(Programas,on_delete=models.CASCADE,default="",blank=True)
-     cCalendario=models.ForeignKey(Ccalendario, on_delete=models.CASCADE, default="", blank=True)
-
-     def clean(self):
-        if calendario.objects.filter(Programa=self.Programa).exists():
-            raise ValidationError("Ya existe un calendario para este programa.")
         
 class MensajesDisponibilidad(models.Model):
     id = models.AutoField(primary_key=True)
@@ -212,7 +159,6 @@ class RegistroAsistencia(models.Model):
 
 class Ccronograma(models.Model):
     id = models.AutoField(primary_key=True)
-    asignatura = models.ForeignKey(Asignaturas,on_delete=models.CASCADE, null=True, blank=True)
     bitacora = models.ManyToManyField(Bitacora, related_name='Ccronogramas')
     registroAsistencia = models.ManyToManyField(RegistroAsistencia,related_name='resgistro_de_asistencia') 
 
@@ -258,3 +204,10 @@ class itinerario(models.Model):
     cprogramacion = models.ForeignKey(Cprogramacion, on_delete=models.CASCADE, default=None, blank=True, related_name='programaciones')
     activo = models.BooleanField(default=True)
 
+class Tapoyoxprograma(models.Model):
+    id=models.AutoField(primary_key=True)
+    Tapoyo=models.ForeignKey(User, on_delete=models.CASCADE)
+    programa = models.ForeignKey(Programas, on_delete=models.CASCADE, default=None)
+
+    class Meta:
+        unique_together = ['Tapoyo']

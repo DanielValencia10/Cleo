@@ -15,12 +15,12 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import home, login, exit, table, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, enviar_tarea, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, calendarioF, asignaturaxprofesor, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,mensajes_disponibilidad_recibidos,salon,Cdiaedit,cronograma,CcronogramaU,Itinerario,CprogramacionU,activardis,desactivardis,obtener_opciones_filtradas,modificarcro,desactivarcro,activarcro,generar_cronograma,diligenciado#,cCalendario,programacion,
+from .views import home, login, exit,usuarios, load_users, desactivar, asignatura, programa, modificar, desactivarpro, activarpro, modificarusu, modificarasig, modificarprom, CproyeccionU, generar, disponibilidad, asignarActividad, mensajes_recibidos, confirmar_mensaje,  proyeccion, CdisponibilidadU, rango, modificarango,enviar_disponibilidad, confirmar_disponibilidad_mensaje,salon,Cdiaedit,cronograma,CcronogramaU,Itinerario,CprogramacionU,activardis,desactivardis,obtener_opciones_filtradas,modificarcro,desactivarcro,activarcro,generar_cronograma,diligenciado,crear_tapoyo_programa#,programacion,
 
 urlpatterns = [
     path('', home, name='home'),
     path('login/', login, name='login'),
-    path('table/', table, name='table'),
+    path('usuarios/', usuarios, name='usuarios'),
     path('logout/', exit, name='exit'),
     path('desactivar/<int:user_id>/', desactivar, name='desactivar'),
     path('user/<int:id>/', modificarusu, name='modificarusu'),
@@ -35,18 +35,14 @@ urlpatterns = [
     path('desactivarpro/', desactivarpro, name='desactivarpro'),
     path('activarpro/', activarpro, name='activarpro'),
     path('proyeccion/CproyeccionU/<int:id>/', CproyeccionU, name='CproyeccionU'),
-    path('enviar_tarea/', enviar_tarea, name='enviar_tarea'),
+    path('asignarActividad/', asignarActividad, name='asignarActividad'),
     path('enviar_disponibilidad/', enviar_disponibilidad, name='enviar_disponibilidad'),
     path('mensajes_recibidos/', mensajes_recibidos, name='mensajes_recibidos'),
-    path('mensajes_disponibilidad_recibidos/', mensajes_disponibilidad_recibidos, name='mensajes_disponibilidad_recibidos'),
     path('confirmar-mensaje/<int:mensaje_id>/',confirmar_mensaje, name='confirmar_mensaje'),
     path('confirmar-disponibilidad-mensaje/<int:mensaje_id>/',confirmar_disponibilidad_mensaje,name='confirmar_disponibilidad_mensaje'),
     path('diponibilidad/', disponibilidad, name='disponibilidad'),
     path('disponibilidad/Cdisponibilidad/<int:id>/', CdisponibilidadU, name='CdisponibilidadU'),
     path('disponibilidad/Cdia/<int:cdia_id>/', Cdiaedit, name='Cdiaedit'),
-    path('calendario/', calendarioF, name='calendario'),
-    path('asignaturaxprofesor/',asignaturaxprofesor, name='asignaturaxprofesor'),
-    #path('calendario/cCalendario/<int:id>',cCalendario, name='cCalendario'),
     path('rango/', rango, name='rango'),
     path('rango/modificar/<int:id>/', modificarango, name='modificarango'),
     path('salon/', salon, name='salon'),
@@ -63,4 +59,6 @@ urlpatterns = [
     path('activarcor/<int:cdia_id>/', activarcro, name='activarcro'),
     path('cronograma/<int:id>/generar_cronograma/', generar_cronograma, name='generar_cronograma'),
     path('diligenciado/', diligenciado, name='diligenciado'),
+    path('crear_tapoyo_programa/', crear_tapoyo_programa, name='crear_tapoyo_programa'),
+    
 ]

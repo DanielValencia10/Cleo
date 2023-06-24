@@ -2,43 +2,43 @@
 <div class="modal-dialog modal-lg " role="document">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="modal-title">Importar Usuarios xls</h2>
+      <h2 class="modal-title">Modificar Asignatura</h2>
       <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">×</span>
       </button>
     </div>
     <div class="container-fluid">
       <div class="card">
         <div class="card-body">
-            <form action="{% url 'modificarasig' asignatura.id %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group" class="form-control form-control-user">
-                    {{form.codigo.label_tag}}
-                    {{form.codigo}}
-                </div>
-                <div class="form-group">
-                    {{form.nombre.label_tag}}
-                    {{form.nombre}}
-                </div>
-                <div class="form-group">
-                  {{form.programa.label_tag}}
-                  {{form.programa}}
-              </div>
-                <div class="form-group">
-                    {{form.semestre.label_tag}}
-                    {{form.semestre}}
-                </div>
-                <div class="form-group">
-                    {{form.creditos.label_tag}}
-                    {{form.creditos}}
-                </div>
-                <div class="form-group">
-                    {{form.intensidad.label_tag}}
-                    {{form.intensidad}}
-                </div>
-             
-                <button class="btn btn-danger btn-user btn-block" type="submit">Guardar</button>
-            </form>
+          <form action="{% url 'modificarasig' asignatura.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group" class="form-control form-control-user">
+              {{form.codigo.label_tag}}
+              {{form.codigo}}
+            </div>
+            <div class="form-group">
+              {{form.nombre.label_tag}}
+              {{form.nombre}}
+            </div>
+            <div class="form-group">
+              {{form.programa.label_tag}}
+              {{form.programa}}
+            </div>
+            <div class="form-group">
+              {{form.semestre.label_tag}}
+              {{form.semestre}}
+            </div>
+            <div class="form-group">
+              {{form.creditos.label_tag}}
+              {{form.creditos}}
+            </div>
+            <div class="form-group">
+              {{form.intensidad.label_tag}}
+              {{form.intensidad}}
+            </div>
+
+            <button class="btn btn-danger btn-user btn-block" type="submit">Guardar</button>
+          </form>
         </div>
       </div>
     </div>
